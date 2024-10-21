@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as InvoicesIndexImport } from './routes/invoices/index'
+import { Route as ContactsIndexImport } from './routes/contacts/index'
 
 // Create/Update Routes
 
@@ -28,6 +29,12 @@ const InvoicesIndexRoute = InvoicesIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ContactsIndexRoute = ContactsIndexImport.update({
+  id: '/contacts/',
+  path: '/contacts/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -37,6 +44,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/contacts/': {
+      id: '/contacts/'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof ContactsIndexImport
       parentRoute: typeof rootRoute
     }
     '/invoices/': {
@@ -53,36 +67,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/contacts/': typeof ContactsIndexRoute
   '/invoices/': typeof InvoicesIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/invoices'
+  fullPaths: '/' | '/contacts' | '/invoices'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/invoices'
-  id: '__root__' | '/' | '/invoices/'
+  to: '/' | '/contacts' | '/invoices'
+  id: '__root__' | '/' | '/contacts/' | '/invoices/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactsIndexRoute: typeof ContactsIndexRoute
   InvoicesIndexRoute: typeof InvoicesIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactsIndexRoute: ContactsIndexRoute,
   InvoicesIndexRoute: InvoicesIndexRoute,
 }
 
@@ -99,11 +118,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/contacts/",
         "/invoices/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/contacts/": {
+      "filePath": "contacts/index.tsx"
     },
     "/invoices/": {
       "filePath": "invoices/index.tsx"
