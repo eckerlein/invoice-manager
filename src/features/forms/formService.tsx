@@ -18,7 +18,7 @@ import RepresentativeComponent from "./components/Representative";
 import BankAccountComponent from "./components/BankAccount";
 import { z } from "zod";
 import BaseInfoComponent from "./components/BaseInfo.tsx";
-import Button from "../../baseComponents/Button.tsx";
+import { Button } from "@/src/components/ui/button.tsx";
 
 // Map Zod fields to components
 const mapping = [
@@ -45,7 +45,7 @@ function FormContainer({
   return (
     <form className="flex flex-col gap-4 p-4" onSubmit={onSubmit}>
       {children}
-      <Button type="submit" loading={loading}>
+      <Button type="submit" disabled={loading}>
         Submit
       </Button>
     </form>
