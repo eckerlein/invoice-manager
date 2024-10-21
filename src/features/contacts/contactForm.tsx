@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { toast } from "@/hooks/use-toast";
@@ -12,10 +11,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  useFormField,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FormSelect } from "../forms/components/FormSelect";
 import FormHelper from "../forms/FormHelper";
+import { useFormContext, useFormState } from "react-hook-form";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -48,12 +49,16 @@ export function ContactForm() {
   //   });
   // }
 
+  const { FormComponent, form } = FormHelper({
+    schema: FormSchema,
+    onSubmit: (data) => console.log(data),
+    defaultValues: defaultValues,
+  });
+
+	const selectedType = form.watch("type");
+
   return (
-    <FormHelper
-      schema={FormSchema}
-      onSubmit={(data) => console.log(data)}
-      defaultValues={defaultValues}
-    >
+    <FormComponent>
       <FormField
         name="companyName"
         render={({ field }) => (
@@ -68,11 +73,15 @@ export function ContactForm() {
         )}
       />
 
+      {selectedType === "company" && (
+        <h1>hello world</h1>
+      )}
+
       <FormSelect
         name="type"
         label="Art des Kontaktes"
         options={["company", "person"]}
       />
-    </FormHelper>
+    </FormComponent>
   );
 }
