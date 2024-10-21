@@ -14,14 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { FormSelect } from "../forms/components/FormSelect";
 import FormHelper from "../forms/FormHelper";
 
@@ -35,7 +27,7 @@ const FormSchema = z.object({
 const defaultValues = {
   username: "",
   type: "company",
-};
+} as const;
 
 export function ContactForm() {
   // const form = useForm<z.infer<typeof FormSchema>>({
@@ -63,7 +55,7 @@ export function ContactForm() {
       defaultValues={defaultValues}
     >
       <FormField
-        name="username"
+        name="companyName"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Username</FormLabel>

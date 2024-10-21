@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { DefaultValues, useForm } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
@@ -16,7 +16,7 @@ export default function FormHelper<Schema extends Zod.Schema>({
   onSubmit: (data: z.infer<Schema>) => void;
   className?: string;
   schema: Schema;
-  defaultValues?: z.infer<Schema>;
+  defaultValues?: DefaultValues<z.infer<Schema>>;
   children: React.ReactNode;
 }) {
   const form = useForm<z.infer<Schema>>({
