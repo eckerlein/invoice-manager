@@ -11,13 +11,11 @@ export default function FormHelper<Schema extends Zod.Schema>({
   className,
   schema,
   defaultValues,
-  children,
 }: {
   onSubmit: (data: z.infer<Schema>) => void;
   className?: string;
   schema: Schema;
   defaultValues?: DefaultValues<z.infer<Schema>>;
-  children: React.ReactNode;
 }) {
   const form = useForm<z.infer<Schema>>({
     resolver: zodResolver(schema),
@@ -36,15 +34,20 @@ export default function FormHelper<Schema extends Zod.Schema>({
     onSubmit(data);
   }
 
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(thisOnSubmit)}
-        className={twMerge("flex flex-col gap-4 p-4", className)}
-      >
-        {children}
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-  );
+  return {
+    FormComponent: function ({ children }: { children: React.ReactNode }) {
+      return (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(thisOnSubmit)}
+            className={twMerge("flex flex-col gap-4 p-4", className)}
+          >
+            {children}
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      );
+    },
+    form,
+  };
 }

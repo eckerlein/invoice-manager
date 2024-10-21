@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 export function FormSelect({
   name,
@@ -30,7 +31,13 @@ export function FormSelect({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Select {...field} onValueChange={field.onChange}>
+            <Select
+              {...field}
+              onValueChange={(value) => {
+                console.log(value);
+                field.onChange(value);
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={"select"} />
               </SelectTrigger>
