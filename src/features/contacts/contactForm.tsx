@@ -97,6 +97,13 @@ export function ContactForm() {
         )}
         <h2>Addresse</h2>
 
+        <FormSelect
+          name="address.type"
+          className="w-[180px]"
+          label="Art der Addresse"
+          options={["billing", "shipping"]}
+        />
+
         <FormField
           name="address.additionalInfo"
           render={({ field }) => (
@@ -136,6 +143,7 @@ export function ContactForm() {
                     type="number"
                     placeholder="Nr."
                     {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage />
@@ -145,29 +153,31 @@ export function ContactForm() {
           <FormField
             name="address.postalCode"
             render={({ field }) => (
-							<FormItem>
+              <FormItem>
                 <FormControl>
                   <Input
                     label="Postleitzahl"
+                    type="number"
                     placeholder="Postleitzahl"
                     {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-						<FormField
-							name="address.city"
-							render={({ field }) => (
-								<FormItem className="col-span-2">
-									<FormControl>
-										<Input label="Stadt" placeholder="Stadt" {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+          <FormField
+            name="address.city"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormControl>
+                  <Input label="Stadt" placeholder="Stadt" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <FormField
           name="address.country"

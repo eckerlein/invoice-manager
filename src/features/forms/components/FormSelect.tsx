@@ -39,8 +39,8 @@ export function FormSelect({
                 field.onChange(value);
               }}
             >
-              <SelectTrigger label="test" className={className}>
-                <SelectValue placeholder={"select"} />
+              <SelectTrigger label={label} className={className}>
+                <SelectValue placeholder={label} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
