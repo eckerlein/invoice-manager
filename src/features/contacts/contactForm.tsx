@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormSelect } from "../forms/components/FormSelect";
+import FormHelper from "../forms/FormHelper";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -31,53 +32,55 @@ const FormSchema = z.object({
   type: z.enum(["company", "person"]),
 });
 
-export function ContactForm() {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      username: "",
-    },
-  });
+const defaultValues = {
+  username: "",
+  type: "company",
+};
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+export function ContactForm() {
+  // const form = useForm<z.infer<typeof FormSchema>>({
+  //   resolver: zodResolver(FormSchema),
+  //   defaultValues: {
+  //     username: "",
+  //   },
+  // });
+
+  // function onSubmit(data: z.infer<typeof FormSchema>) {
+  //   toast({
+  //     title: "You submitted the following values:",
+  //     description: (
+  //       <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+  //         <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+  //       </pre>
+  //     ),
+  //   });
+  // }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <FormHelper
+      schema={FormSchema}
+      onSubmit={(data) => console.log(data)}
+      defaultValues={defaultValues}
+    >
+      <FormField
+        name="username"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Username</FormLabel>
+            <FormControl>
+              <Input placeholder="shadcn" {...field} />
+            </FormControl>
+            <FormDescription>This is your public display name.</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-        <FormSelect
-          name="type"
-          label="Art des Kontaktes"
-          options={["company", "person"]}
-        />
-
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+      <FormSelect
+        name="type"
+        label="Art des Kontaktes"
+        options={["company", "person"]}
+      />
+    </FormHelper>
   );
 }
