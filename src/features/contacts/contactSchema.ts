@@ -66,10 +66,10 @@ export const contactSchema = z.object({
   id: z.string(),
   baseInfo: baseContactInformationSchema,
   address: addressSchema,
-  email: z.array(emailSchema).optional(),
-  phoneNumber: z.array(phoneNumberSchema).optional(),
-  taxInfo: taxInfoSchema.optional(),
-  bankAccount: bankAccountSchema.optional(),
+  email: emailSchema,
+  phoneNumber: phoneNumberSchema,
+  taxInfo: taxInfoSchema,
+  bankAccount: bankAccountSchema,
 });
 
 // Export types

@@ -4,7 +4,6 @@ import {
   addressSchema,
   bankAccountSchema,
   baseContactInformationSchema,
-  contactSchema,
   emailSchema,
   phoneNumberSchema,
   representativeSchema,
@@ -32,21 +31,4 @@ const mapping = [
   [bankAccountSchema, BankAccountComponent],
 ] as const;
 
-const Form = createTsForm(mapping);
-
-const ContactForm = () => {
-  return (
-    <div className="p-4">
-      <h1>Create Contact</h1>
-      <Form
-        onSubmit={(data) => {
-          console.log("Form data", data);
-          // Call your contactService.createContact(data) here
-        }}
-        schema={contactSchema}
-      />
-    </div>
-  );
-};
-
-export default ContactForm;
+export const FormHelper = createTsForm(mapping);
