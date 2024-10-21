@@ -6,7 +6,7 @@ export const addressSchema = z.object({
   additionalInfo: z.string().optional(),
   street: z.string(),
   streetNumber: z.number(),
-  postalCode: z.string(),
+  postalCode: z.number(),
   city: z.string(),
   country: z.string(),
 });
@@ -64,13 +64,13 @@ export const baseContactInformationSchema = z.discriminatedUnion("type", [
 
 // Full contact schema
 export const contactSchema = z.object({
-  id: z.string(),
+  // id: z.string(),
   baseInfo: baseContactInformationSchema,
   address: addressSchema,
-  email: emailSchema,
-  phoneNumber: phoneNumberSchema,
-  taxInfo: taxInfoSchema,
-  bankAccount: bankAccountSchema,
+  // email: emailSchema,
+  // phoneNumber: phoneNumberSchema,
+  // taxInfo: taxInfoSchema,
+  // bankAccount: bankAccountSchema,
 });
 
 // Export types
