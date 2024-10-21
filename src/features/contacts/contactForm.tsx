@@ -14,10 +14,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import { contactSchema } from "./contactSchema";
 import { Button } from "@/components/ui/button";
+import { uid } from "uid";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
+    defaultValues: {
+      id: uid(),
+    },
   });
   function onSubmit(data: z.infer<typeof contactSchema>) {
     toast({
@@ -28,7 +32,6 @@ export function ContactForm() {
         </pre>
       ),
     });
-    onSubmit(data);
   }
 
   return (
