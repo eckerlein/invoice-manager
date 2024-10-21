@@ -5,6 +5,7 @@ export const addressSchema = z.object({
   type: z.enum(["billing", "shipping"]),
   additionalInfo: z.string().optional(),
   street: z.string(),
+  streetNumber: z.number(),
   postalCode: z.string(),
   city: z.string(),
   country: z.string(),

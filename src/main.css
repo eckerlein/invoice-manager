@@ -95,6 +95,13 @@
     @apply border-border;
     --font-sans: "sans-serif";
   }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings:

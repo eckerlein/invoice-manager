@@ -3,10 +3,8 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -15,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import { contactSchema } from "./contactSchema";
+import { Button } from "@/components/ui/button";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -98,13 +97,6 @@ export function ContactForm() {
         )}
         <h2>Addresse</h2>
 
-        <FormSelect
-          name="address.type"
-          className="w-[180px]"
-          label="Art der Adresse"
-          options={["billing", "shipping"]}
-        />
-
         <FormField
           name="address.additionalInfo"
           render={({ field }) => (
@@ -120,43 +112,63 @@ export function ContactForm() {
             </FormItem>
           )}
         />
-        <FormField
-          name="address.street"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input label="Straße" placeholder="Straße" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="address.postalCode"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  label="Postleitzahl"
-                  placeholder="Postleitzahl"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="address.city"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input label="Stadt" placeholder="Stadt" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            name="address.street"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormControl>
+                  <Input label="Straße" placeholder="Straße" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="address.streetNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    label="Nr."
+                    type="number"
+                    placeholder="Nr."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="address.postalCode"
+            render={({ field }) => (
+							<FormItem>
+                <FormControl>
+                  <Input
+                    label="Postleitzahl"
+                    placeholder="Postleitzahl"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+						<FormField
+							name="address.city"
+							render={({ field }) => (
+								<FormItem className="col-span-2">
+									<FormControl>
+										<Input label="Stadt" placeholder="Stadt" {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+        </div>
         <FormField
           name="address.country"
           render={({ field }) => (
@@ -168,6 +180,7 @@ export function ContactForm() {
             </FormItem>
           )}
         />
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
