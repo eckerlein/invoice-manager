@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { createTsForm } from "@ts-react/form";
 import {
   addressSchema,
@@ -18,6 +18,7 @@ import RepresentativeComponent from "./components/Representative";
 import BankAccountComponent from "./components/BankAccount";
 import { z } from "zod";
 import BaseInfoComponent from "./components/BaseInfo.tsx";
+import Button from "../../baseComponents/Button.tsx";
 
 // Map Zod fields to components
 const mapping = [
@@ -31,4 +32,27 @@ const mapping = [
   [bankAccountSchema, BankAccountComponent],
 ] as const;
 
-export const FormHelper = createTsForm(mapping);
+function FormContainer({
+  onSubmit,
+  children,
+  loading,
+}: {
+  onSubmit: () => void;
+  children: ReactNode;
+  loading?: boolean;
+  className?: string;
+}) {
+  return (
+    <form className="flex flex-col gap-4 p-4" onSubmit={onSubmit}>
+      {children}
+      <Button type="submit" loading={loading}>
+        Submit
+      </Button>
+    </form>
+  );
+}
+
+// Make sure to pass it to `createTsForm`
+export const FormHelper = createTsForm(mapping, {
+  FormComponent: FormContainer,
+});
