@@ -15,7 +15,7 @@ export default defineConfig(async () => ({
   clearScreen: false,
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./"),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   // 2. tauri expects a fixed port, fail if that port is not available

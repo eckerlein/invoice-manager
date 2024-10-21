@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ContactForm } from "../../features/contacts/contactForm";
-import { FormHelper } from "../../features/forms/formService";
 import { z } from "zod";
+import { emailSchema } from "@/features/contacts/contactSchema";
+import { ContactForm } from "@/features/contacts/contactForm";
 
 export const Route = createFileRoute("/contacts/")({
   component: () => (
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/contacts/")({
       <p>Here are your contacts</p>
       <h2>Create new</h2>
       <ContactForm />
-      {/* <FormHelper schema={z.object({ text: z.string() })} onSubmit={() => {}} /> */}
+
       <p>hellow orl</p>
     </div>
   ),
