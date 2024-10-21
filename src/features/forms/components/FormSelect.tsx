@@ -31,7 +31,6 @@ export function FormSelect({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
           <FormControl>
             <Select
               {...field}
@@ -40,7 +39,7 @@ export function FormSelect({
                 field.onChange(value);
               }}
             >
-              <SelectTrigger className={className}>
+              <SelectTrigger label="test" className={className}>
                 <SelectValue placeholder={"select"} />
               </SelectTrigger>
               <SelectContent>
