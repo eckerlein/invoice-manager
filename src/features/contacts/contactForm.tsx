@@ -28,6 +28,7 @@ export function ContactForm() {
 
   return (
     <FormComponent>
+      <h2>Kontakt</h2>
       <FormSelect
         name="baseInfo.type"
         className="w-[180px]"
@@ -89,6 +90,83 @@ export function ContactForm() {
           />
         </div>
       )}
+      <h2>Addresse</h2>
+      {/* export const addressSchema = z.object({
+				type: z.enum(["billing", "shipping"]),
+				additionalInfo: z.string().optional(),
+				street: z.string(),
+				postalCode: z.string(),
+				city: z.string(),
+				country: z.string(),
+			}); */}
+
+      <FormSelect
+        name="address.type"
+        className="w-[180px]"
+        label="Art der Adresse"
+        options={["billing", "shipping"]}
+      />
+
+      <FormField
+        name="address.additionalInfo"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Addresszusatz</FormLabel>
+            <FormControl>
+              <Input placeholder="Addresszusatz" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="address.street"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Straße</FormLabel>
+            <FormControl>
+              <Input placeholder="Straße" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="address.postalCode"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Postleitzahl</FormLabel>
+            <FormControl>
+              <Input placeholder="Postleitzahl" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="address.city"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Stadt</FormLabel>
+            <FormControl>
+              <Input placeholder="Stadt" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="address.country"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Land</FormLabel>
+            <FormControl>
+              <Input placeholder="Land" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </FormComponent>
   );
 }
