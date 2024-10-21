@@ -51,7 +51,7 @@ export const bankAccountSchema = z.object({
 export const baseContactInformationSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("company"),
-    name: z.string(),
+    companyName: z.string(),
   }),
   z.object({
     type: z.literal("person"),
