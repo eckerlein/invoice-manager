@@ -19,9 +19,11 @@ export function FormSelect({
   name,
   label,
   options,
+  className,
 }: {
   name: string;
   label: string;
+  className?: string;
   options: string[];
 }) {
   return (
@@ -38,7 +40,7 @@ export function FormSelect({
                 field.onChange(value);
               }}
             >
-              <SelectTrigger>
+              <SelectTrigger className={className}>
                 <SelectValue placeholder={"select"} />
               </SelectTrigger>
               <SelectContent>
