@@ -4,38 +4,49 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
+  SelectGroup,
 } from "@/components/ui/select";
-import { FormControl, FormField } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 export function FormSelect({
   name,
+  label,
   options,
-  control,
 }: {
   name: string;
+  label: string;
   options: string[];
-  control: ReturnType<typeof useForm>["control"];
 }) {
   return (
     <FormField
       name={name}
-      control={control}
       render={({ field }) => (
-        <FormControl>
-          <Select {...field}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {options.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormControl>
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Select {...field} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder={"select"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {options.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
       )}
     />
   );
