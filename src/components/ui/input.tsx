@@ -1,25 +1,45 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
+  ({ className, type, label, ...props }, ref) => {
+    const id = React.useId();
     return (
-      <input
-        type={type}
+      <fieldset
         className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "relative w-full rounded-md border border-input bg-background text-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+          "focus-within:border-primary", // Change border color on focus
           className
         )}
-        ref={ref}
-        {...props}
-      />
+      >
+        {label && (
+          <legend className="mx-2 text-sm font-medium">
+            <span className="text-muted-foreground bg-background px-1">
+              {/* Background color for seamless appearance */}
+              {label}
+            </span>
+          </legend>
+        )}
+        <input
+          type={type}
+          id={id}
+          className={cn(
+            "w-full bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+            "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground"
+          )}
+          ref={ref}
+          {...props}
+        />
+      </fieldset>
     );
   }
 );
+
 Input.displayName = "Input";
 
 export { Input };

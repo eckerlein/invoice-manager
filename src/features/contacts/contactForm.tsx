@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -10,163 +11,164 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FormSelect } from "../forms/components/FormSelect";
-import FormHelper from "../forms/FormHelper";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "@/hooks/use-toast";
 import { contactSchema } from "./contactSchema";
 
-const defaultValues = {
-  baseInfo: {
-    type: "company",
-  },
-} as const;
-
 export function ContactForm() {
-  const { FormComponent, form } = FormHelper({
-    schema: contactSchema,
-    onSubmit: (data) => console.log(data),
-    defaultValues: defaultValues,
+  const form = useForm<z.infer<typeof contactSchema>>({
+    resolver: zodResolver(contactSchema),
   });
+  function onSubmit(data: z.infer<typeof contactSchema>) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+    onSubmit(data);
+  }
 
   return (
-    <FormComponent>
-      <h2>Kontakt</h2>
-      <FormSelect
-        name="baseInfo.type"
-        className="w-[180px]"
-        label="Art des Kontaktes"
-        options={["company", "person"]}
-      />
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 p-4"
+      >
+        <h2>Kontakt</h2>
+        <FormSelect
+          name="baseInfo.type"
+          className="w-[180px]"
+          label="Art des Kontaktes"
+          options={["company", "person"]}
+        />
 
-      {form.watch("baseInfo.type") === "company" ? (
+        {form.watch("baseInfo.type") === "company" ? (
+          <FormField
+            name="baseInfo.companyName"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input label="Name der Firma" placeholder="Name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ) : (
+          <div className="grid grid-cols-3 gap-4 w-full">
+            <FormField
+              name="baseInfo.title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input label="Titel" placeholder="dr." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="baseInfo.firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input label="Vorname" placeholder="Vorname" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="baseInfo.lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input label="Nachname" placeholder="Nachname" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+        <h2>Addresse</h2>
+
+        <FormSelect
+          name="address.type"
+          className="w-[180px]"
+          label="Art der Adresse"
+          options={["billing", "shipping"]}
+        />
+
         <FormField
-          name="baseInfo.companyName"
+          name="address.additionalInfo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name der Firma</FormLabel>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input
+                  label="Addresszusatz"
+                  placeholder="Addresszusatz"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-      ) : (
-        <div className="grid grid-cols-3 gap-4 w-full">
-          <FormField
-            name="baseInfo.title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Titel</FormLabel>
-                <FormControl>
-                  <Input placeholder="dr." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="baseInfo.firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Vorname</FormLabel>
-                <FormControl>
-                  <Input placeholder="Vorname" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="baseInfo.lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nachname</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nachname" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      )}
-      <h2>Addresse</h2>
-      {/* export const addressSchema = z.object({
-				type: z.enum(["billing", "shipping"]),
-				additionalInfo: z.string().optional(),
-				street: z.string(),
-				postalCode: z.string(),
-				city: z.string(),
-				country: z.string(),
-			}); */}
-
-      <FormSelect
-        name="address.type"
-        className="w-[180px]"
-        label="Art der Adresse"
-        options={["billing", "shipping"]}
-      />
-
-      <FormField
-        name="address.additionalInfo"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Addresszusatz</FormLabel>
-            <FormControl>
-              <Input placeholder="Addresszusatz" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="address.street"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Straße</FormLabel>
-            <FormControl>
-              <Input placeholder="Straße" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="address.postalCode"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Postleitzahl</FormLabel>
-            <FormControl>
-              <Input placeholder="Postleitzahl" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="address.city"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Stadt</FormLabel>
-            <FormControl>
-              <Input placeholder="Stadt" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="address.country"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Land</FormLabel>
-            <FormControl>
-              <Input placeholder="Land" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </FormComponent>
+        <FormField
+          name="address.street"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input label="Straße" placeholder="Straße" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="address.postalCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  label="Postleitzahl"
+                  placeholder="Postleitzahl"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="address.city"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input label="Stadt" placeholder="Stadt" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="address.country"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input label="Land" placeholder="Land" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
   );
 }
