@@ -8,12 +8,9 @@ interface FormSectionProps<TFieldValues extends Record<string, any>> {
   render: (index: number) => React.ReactNode; // Render prop function that returns the form fields
 }
 
-export default function FormSection<TFieldValues extends Record<string, any>>({
-  form,
-  name,
-  label,
-  render,
-}: FormSectionProps<TFieldValues>) {
+export default function FormSectionArray<
+  TFieldValues extends Record<string, any>,
+>({ form, name, label, render }: FormSectionProps<TFieldValues>) {
   return (
     <>
       {form.getValues(name)?.map((_: any, index: number) => (
