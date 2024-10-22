@@ -27,7 +27,6 @@ export const phoneNumberSchema = z.object({
 export const taxInfoSchema = z.object({
   taxNumber: z.string().optional(),
   vatId: z.string().optional(),
-  allowTaxFreeInvoices: z.boolean().optional(),
 });
 
 // Representative schema

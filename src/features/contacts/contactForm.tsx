@@ -194,14 +194,6 @@ export function ContactForm() {
         >
           <TextField name="taxInfo.taxNumber" label="Steuernummer" />
           <TextField name="taxInfo.vatId" label="Umsatzsteuer-ID" />
-          {/* <FormSelect
-            name="taxInfo.allowTaxFreeInvoices"
-            label="Steuerfreie Rechnungen"
-            options={[
-              { label: "Ja", value: true },
-              { label: "Nein", value: false },
-            ]}
-          /> */}
         </FormSectionSingle>
 
         <FormSectionAdder
