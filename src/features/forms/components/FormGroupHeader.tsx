@@ -22,6 +22,7 @@ export default function FormGroupHeader<TFieldValues extends FieldValues>({
       <Button
         type="button"
         variant={"outline"}
+        aria-label="Remove section"
         className="border-destructive text-destructive"
         onClick={() => {
           const entries = form.getValues(name);
