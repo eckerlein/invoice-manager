@@ -70,7 +70,7 @@ export const contactSchema = z.object({
   email: z.array(emailSchema).optional(),
   phoneNumber: z.array(phoneNumberSchema).optional(),
   // taxInfo: taxInfoSchema,
-  // bankAccount: bankAccountSchema,
+  bankAccount: z.array(bankAccountSchema).optional(),
 });
 
 // Export types
