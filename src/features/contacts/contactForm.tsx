@@ -46,7 +46,7 @@ export function ContactForm() {
       ...(form.getValues("address") ?? []),
       getEmptyObjectFromSchema(addressSchema),
     ]);
-    form.trigger("address");
+    form.reset({ address: form.getValues("address") });
   }
 
   return (

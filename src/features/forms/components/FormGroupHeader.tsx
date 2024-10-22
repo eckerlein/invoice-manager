@@ -26,11 +26,17 @@ export default function FormGroupHeader<TFieldValues extends FieldValues>({
         onClick={() => {
           const entries = form.getValues(name);
           if (!entries) return;
+
+          // Filter out the entry at the given index
           const newValues = entries.filter(
             (_: (typeof entries)[number], i: number) => i !== index
           );
-          form.setValue(name, newValues);
-          form.trigger(name);
+
+          // Reset the specific field, properly typed
+          form.reset({
+            ...form.getValues(), // Spread the existing form values to retain them
+            [name]: newValues, // Only update the specific field we want to reset
+          });
         }}
       >
         <Minus />
