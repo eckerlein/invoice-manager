@@ -9,9 +9,9 @@ import { addressSchema, contactSchema } from "./contactSchema";
 import { Button } from "@/components/ui/button";
 import { uid } from "uid";
 import TextField from "../forms/components/TextField";
-import FormSectionHeader from "../forms/components/FormSectionHeader";
 import FormSectionAdder from "../forms/components/FormSectionAdder";
 import { Label } from "@/components/ui/label";
+import FormSection from "../forms/components/FormSection";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -62,75 +62,71 @@ export function ContactForm() {
           </div>
         )}
 
-        {form.getValues("address")?.map((_, index) => (
-          <div key={index} className="flex flex-col gap-2">
-            <FormSectionHeader
-              name="address"
-              label="Addresse"
-              index={index}
-              form={form}
-            />
-
-            <FormSelect
-              name={`address.${index}.type`}
-              className="w-[180px]"
-              label="Art der Addresse"
-              options={["billing", "shipping"]}
-            />
-
-            <div className="grid grid-cols-3 gap-x-4 gap-y-2">
-              <TextField
-                name={`address.${index}.street`}
-                className="col-span-2"
-                label="Straße"
+        <FormSection
+          name="address"
+          label="Addresse"
+          form={form}
+          render={(index) => (
+            <>
+              <FormSelect
+                name={`address.${index}.type`}
+                className="w-[180px]"
+                label="Art der Addresse"
+                options={["billing", "shipping"]}
               />
+
+              <div className="grid grid-cols-3 gap-x-4 gap-y-2">
+                <TextField
+                  name={`address.${index}.street`}
+                  className="col-span-2"
+                  label="Straße"
+                />
+                <TextField
+                  name={`address.${index}.streetNumber`}
+                  label="Nr."
+                  type="number"
+                />
+                <TextField
+                  name={`address.${index}.postalCode`}
+                  label="Postleitzahl"
+                  type="number"
+                />
+                <TextField
+                  name={`address.${index}.city`}
+                  className="col-span-2"
+                  label="Stadt"
+                />
+              </div>
+
               <TextField
-                name={`address.${index}.streetNumber`}
-                label="Nr."
-                type="number"
+                name={`address.${index}.additionalInfo`}
+                label="Addresszusatz"
               />
+
+              <TextField name={`address.${index}.country`} label="Land" />
+            </>
+          )}
+        />
+
+        <FormSection
+          name="email"
+          label="Email"
+          form={form}
+          render={(index) => (
+            <>
               <TextField
-                name={`address.${index}.postalCode`}
-                label="Postleitzahl"
-                type="number"
+                name={`email.${index}.emailAddress`}
+                label="Email Addresse"
               />
-              <TextField
-                name={`address.${index}.city`}
-                className="col-span-2"
-                label="Stadt"
+
+              <FormSelect
+                name={`email.${index}.type`}
+                label="Art der Email"
+                options={["business", "personal", "office", "other"]}
               />
-            </div>
-
-            <TextField
-              name={`address.${index}.additionalInfo`}
-              label="Addresszusatz"
-            />
-
-            <TextField name={`address.${index}.country`} label="Land" />
-          </div>
-        ))}
-
-        {form.getValues("email")?.map((_, index) => (
-          <div key={index} className="flex flex-col gap-2">
-            <FormSectionHeader
-              name="email"
-              label="Email"
-              index={index}
-              form={form}
-            />
-
-            <TextField
-              name={`email.${index}.emailAddress`}
-              label="Email Addresse"
-            />
-
-            <FormSelect
-              name={`email.${index}.type`}
-              label="Art der Email"
-              options={["business", "personal", "office", "other"]}
-            />
-          </div>
-        ))}
+            </>
+          )}
+        />
 
         <FormSectionAdder
           form={form}
