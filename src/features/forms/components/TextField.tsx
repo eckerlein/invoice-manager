@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FormControl,
   FormField,
@@ -10,11 +9,13 @@ import { Input } from "@/components/ui/input";
 const TextField = ({
   name,
   label,
+  placeholder,
   className,
   type,
 }: {
   name: string;
   label: string;
+  placeholder?: string;
   className?: string;
   type?: "text" | "number";
 }) => {
@@ -27,12 +28,12 @@ const TextField = ({
             <FormControl>
               <Input
                 label={label}
-                placeholder={label}
+                placeholder={placeholder ?? label}
                 type={type}
                 onChange={(e) => {
-                  type === "number" 
-										? onChange(Number(e.target.value))
-                  	: onChange(e);
+                  type === "number"
+                    ? onChange(Number(e.target.value))
+                    : onChange(e);
                 }}
                 {...rest}
               />
