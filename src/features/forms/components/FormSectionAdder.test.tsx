@@ -6,24 +6,32 @@ import FormSectionAdder from "./FormSectionAdder";
 import { Form } from "@/components/ui/form";
 import TextField from "./TextField";
 
-// Simplified addressSchema
+// Simplified schemas for test purposes
 const addressSchema = z.object({
   street: z.string(),
 });
 
-const schema = z.object({
-  address: z.array(addressSchema).optional(),
+const contactInfoSchema = z.object({
+  phone: z.string(),
 });
 
+// Root schema for the form
+const schema = z.object({
+  address: z.array(addressSchema).optional(),
+  contactInfo: contactInfoSchema.optional(),
+});
+
+// Mapping schemas
 const schemaMap = {
   address: addressSchema,
+  contactInfo: contactInfoSchema,
 };
 
 describe("FormSectionAdder", () => {
   const TestForm = () => {
     const form = useForm<z.infer<typeof schema>>({
       resolver: zodResolver(schema),
-      defaultValues: { address: [] },
+      defaultValues: { address: [], contactInfo: undefined },
     });
 
     return (
@@ -31,7 +39,10 @@ describe("FormSectionAdder", () => {
         <form>
           <FormSectionAdder
             form={form}
-            sections={[{ name: "address", label: "Addresse" }]}
+            sections={[
+              { name: "address", label: "Addresse", type: "array" },
+              { name: "contactInfo", label: "Contact Info", type: "single" },
+            ]}
             schemaMap={schemaMap}
           />
 
@@ -41,19 +52,28 @@ describe("FormSectionAdder", () => {
               <TextField name={`address.${index}.street`} label="Straße" />
             </div>
           ))}
+
+          {/* Render the contact info field */}
+          {form.getValues("contactInfo") && (
+            <div data-testid="contactInfo">
+              <TextField name="contactInfo.phone" label="Phone" />
+            </div>
+          )}
         </form>
       </Form>
     );
   };
 
-  it("should render the Addresse button", () => {
+  it("should render the Addresse button and Contact Info button", () => {
     render(<TestForm />);
 
-    // Find the Addresse button in the DOM
+    // Find the Addresse and Contact Info buttons in the DOM
     const addButton = screen.getByText("Addresse");
+    const contactInfoButton = screen.getByText("Contact Info");
 
-    // Check if the button is rendered
+    // Check if both buttons are rendered
     expect(addButton).toBeInTheDocument();
+    expect(contactInfoButton).toBeInTheDocument();
   });
 
   it("should add a new address section when the Addresse button is clicked", () => {
@@ -68,5 +88,23 @@ describe("FormSectionAdder", () => {
     // Check that the new address field is rendered
     const newAddressField = screen.getByTestId("address-0");
     expect(newAddressField).toBeInTheDocument();
+  });
+
+  it("should add a single contact info section when the Contact Info button is clicked", () => {
+    render(<TestForm />);
+
+    // Find the Contact Info button
+    const contactInfoButton = screen.getByText("Contact Info");
+
+    // Simulate clicking the button
+    fireEvent.click(contactInfoButton);
+
+    // Check that the contact info field is rendered
+    const contactInfoField = screen.getByTestId("contactInfo");
+    expect(contactInfoField).toBeInTheDocument();
+
+    // Click the Contact Info button again to test that no duplicate is added
+    fireEvent.click(contactInfoButton);
+    expect(screen.getAllByTestId("contactInfo").length).toBe(1); // Only one instance should exist
   });
 });
