@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Minus } from "lucide-react";
 import { useForm, FieldValues, Path } from "react-hook-form";
 
-export default function FormGroupHeader<TFieldValues extends FieldValues>({
+export default function FormSectionHeader<TFieldValues extends FieldValues>({
   name,
   label,
   index,

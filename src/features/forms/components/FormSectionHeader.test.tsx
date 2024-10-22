@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import FormGroupHeader from "./FormGroupHeader";
+import FormSectionHeader from "./FormSectionHeader";
 import { Form } from "@/components/ui/form";
 import TextField from "./TextField";
 
@@ -15,7 +15,7 @@ const schema = z.object({
   address: z.array(addressSchema).optional(),
 });
 
-describe("FormGroupHeader", () => {
+describe("FormSectionHeader", () => {
   const TestForm = () => {
     const form = useForm<z.infer<typeof schema>>({
       resolver: zodResolver(schema),
@@ -28,7 +28,7 @@ describe("FormGroupHeader", () => {
           {/* Simulating the display of multiple address sections */}
           {form.getValues("address")?.map((_, index) => (
             <div key={index} data-testid={`address-${index}`}>
-              <FormGroupHeader
+              <FormSectionHeader
                 name="address"
                 label="Addresse"
                 index={index}
