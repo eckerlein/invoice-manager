@@ -1,21 +1,47 @@
 import React from "react";
-import { useTsController } from "@ts-react/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
-const TextField = () => {
-  const { field, error } = useTsController<string>();
-
+const TextField = ({
+  name,
+  label,
+  className,
+  type,
+}: {
+  name: string;
+  label: string;
+  className?: string;
+  type?: "text" | "number";
+}) => {
   return (
-    <div className="mb-4">
-      <input
-        value={field.value || ""}
-        onChange={(e) => field.onChange(e.target.value)}
-        className="border p-2"
-        placeholder="Enter text"
-      />
-      {error?.errorMessage && (
-        <span className="text-red-500">{error?.errorMessage}</span>
-      )}
-    </div>
+    <FormField
+      name={name}
+      render={({ field: { onChange, ...rest } }) => {
+        return (
+          <FormItem className={className}>
+            <FormControl>
+              <Input
+                label={label}
+                placeholder={label}
+                type={type}
+                onChange={(e) => {
+                  type === "number" 
+										? onChange(Number(e.target.value))
+                  	: onChange(e);
+                }}
+                {...rest}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
   );
 };
 
