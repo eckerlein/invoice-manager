@@ -15,10 +15,9 @@ import { toast } from "@/hooks/use-toast";
 import { addressSchema, contactSchema } from "./contactSchema";
 import { Button } from "@/components/ui/button";
 import { uid } from "uid";
-import { Plus } from "lucide-react";
 import TextField from "../forms/components/TextField";
-import { getEmptyObjectFromSchema } from "@/lib/getEmtpyObjectFromSchema";
 import FormGroupHeader from "../forms/components/FormGroupHeader";
+import FormSectionAdder from "../forms/components/FormSectionAdder";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -39,14 +38,6 @@ export function ContactForm() {
         </pre>
       ),
     });
-  }
-
-  function addAddress() {
-    form.setValue("address", [
-      ...(form.getValues("address") ?? []),
-      getEmptyObjectFromSchema(addressSchema),
-    ]);
-    form.reset({ address: form.getValues("address") });
   }
 
   return (
@@ -162,16 +153,11 @@ export function ContactForm() {
           </div>
         ))}
 
-        <div className="flex w-full flex-wrap gap-4">
-          <Button
-            type="button"
-            onClick={() => addAddress()}
-            className="rounded-xl"
-          >
-            <Plus className="text-white" />
-            Addresse
-          </Button>
-        </div>
+        <FormSectionAdder
+          form={form}
+          sections={[{ name: "address", label: "Addresse" }]}
+          schemaMap={{ address: addressSchema }}
+        />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
