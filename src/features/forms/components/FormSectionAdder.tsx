@@ -57,17 +57,26 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
 
   return (
     <div className="flex w-full flex-wrap gap-4">
-      {sections.map((section) => (
-        <Button
-          key={section.name as string}
-          type="button"
-          onClick={() => handleAddSection(section.name, section.type)}
-          className="rounded-xl"
-        >
-          <Plus className="text-white" />
-          {section.label}
-        </Button>
-      ))}
+      {sections.map((section) => {
+        const currentValue = form.getValues(section.name);
+
+        // If type is 'single' and the value already exists, don't render the add button
+        if (section.type === "single" && currentValue) {
+          return null;
+        }
+
+        return (
+          <Button
+            key={section.name as string}
+            type="button"
+            onClick={() => handleAddSection(section.name, section.type)}
+            className="rounded-xl"
+          >
+            <Plus className="text-white" />
+            {section.label}
+          </Button>
+        );
+      })}
     </div>
   );
 }

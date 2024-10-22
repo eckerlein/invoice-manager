@@ -107,4 +107,24 @@ describe("FormSectionAdder", () => {
     fireEvent.click(contactInfoButton);
     expect(screen.getAllByTestId("contactInfo").length).toBe(1); // Only one instance should exist
   });
+
+  it("should hide the Contact Info button after the section is added", () => {
+    render(<TestForm />);
+
+    // Find the Contact Info button
+    const contactInfoButton = screen.getByText("Contact Info");
+
+    // Check if the button is initially rendered
+    expect(contactInfoButton).toBeInTheDocument();
+
+    // Simulate clicking the button to add the contact info section
+    fireEvent.click(contactInfoButton);
+
+    // Check that the contact info field is rendered
+    const contactInfoField = screen.getByTestId("contactInfo");
+    expect(contactInfoField).toBeInTheDocument();
+
+    // Ensure that the Contact Info button is no longer rendered
+    expect(screen.queryByText("Contact Info")).not.toBeInTheDocument();
+  });
 });
