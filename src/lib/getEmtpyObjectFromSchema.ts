@@ -22,11 +22,11 @@ export function getEmptyObjectFromSchema<T extends z.ZodTypeAny>(
   ) {
     return undefined as z.infer<T>; // Return undefined for optional or nullable fields
   } else if (schema instanceof z.ZodString) {
-    return "" as z.infer<T>; // Return empty string for strings
+    return undefined as z.infer<T>; // Return empty string for strings
   } else if (schema instanceof z.ZodNumber) {
-    return 0 as z.infer<T>; // Return 0 for numbers
+    return undefined as z.infer<T>; // Return 0 for numbers
   } else if (schema instanceof z.ZodBoolean) {
-    return false as z.infer<T>; // Return false for booleans
+    return undefined as z.infer<T>; // Return false for booleans
   } else if (schema instanceof z.ZodEnum) {
     const firstEnumValue = schema.options[0];
     return firstEnumValue as z.infer<T>; // Return the first enum value as a default
