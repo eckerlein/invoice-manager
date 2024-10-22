@@ -7,18 +7,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import {
   addressSchema,
+  bankAccountSchema,
   baseContactInformationSchema,
   contactSchema,
   emailSchema,
   phoneNumberSchema,
+  taxInfoSchema,
 } from "./contactSchema";
 import { Button } from "@/components/ui/button";
 import { uid } from "uid";
 import TextField from "../forms/components/TextField";
 import FormSectionAdder from "../forms/components/FormSectionAdder";
 import { Label } from "@/components/ui/label";
-import FormSection from "../forms/components/FormSection";
+import FormSectionArray from "../forms/components/FormSectionArray";
 import getDiscriminatedUnionValues from "@/lib/utils/zod/getDiscriminatedUnionValues";
+import FormSectionSingle from "../forms/components/FormSectionSingle";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -70,7 +73,7 @@ export function ContactForm() {
           </div>
         )}
 
-        <FormSection
+        <FormSectionArray
           name="address"
           label="Addresse"
           form={form}
@@ -117,7 +120,7 @@ export function ContactForm() {
           )}
         />
 
-        <FormSection
+        <FormSectionArray
           name="email"
           label="Email"
           form={form}
@@ -139,7 +142,7 @@ export function ContactForm() {
           )}
         />
 
-        <FormSection
+        <FormSectionArray
           name="phoneNumber"
           label="Telefonnummer"
           form={form}
@@ -161,7 +164,7 @@ export function ContactForm() {
           )}
         />
 
-        <FormSection
+        <FormSectionArray
           name="bankAccount"
           label="Bankkonto"
           form={form}
@@ -184,15 +187,39 @@ export function ContactForm() {
           )}
         />
 
+        <FormSectionSingle
+          form={form}
+          name="taxInfo"
+          label="Steuerinformationen"
+        >
+          <TextField name="taxInfo.taxNumber" label="Steuernummer" />
+          <TextField name="taxInfo.vatId" label="Umsatzsteuer-ID" />
+          {/* <FormSelect
+            name="taxInfo.allowTaxFreeInvoices"
+            label="Steuerfreie Rechnungen"
+            options={[
+              { label: "Ja", value: true },
+              { label: "Nein", value: false },
+            ]}
+          /> */}
+        </FormSectionSingle>
+
         <FormSectionAdder
           form={form}
           sections={[
-            { name: "address", label: "Addresse" },
-            { name: "email", label: "Email" },
-            { name: "phoneNumber", label: "Telefonnummer" },
-            { name: "bankAccount", label: "Bankkonto" },
+            { type: "array", name: "address", label: "Addresse" },
+            { type: "array", name: "email", label: "Email" },
+            { type: "array", name: "phoneNumber", label: "Telefonnummer" },
+            { type: "array", name: "bankAccount", label: "Bankkonto" },
+            { type: "single", name: "taxInfo", label: "Steuerinformationen" },
           ]}
-          schemaMap={{ address: addressSchema }}
+          schemaMap={{
+            address: addressSchema,
+            email: emailSchema,
+            phoneNumber: phoneNumberSchema,
+            bankAccount: bankAccountSchema,
+            taxInfo: taxInfoSchema,
+          }}
         />
         <Button type="submit">Submit</Button>
       </form>

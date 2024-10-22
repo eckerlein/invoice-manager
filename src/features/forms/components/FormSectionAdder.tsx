@@ -10,28 +10,49 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
   form,
   schemaMap,
 }: {
-  sections: { name: Path<TFieldValues>; label: string }[];
+  sections: {
+    name: Path<TFieldValues>;
+    label: string;
+    type: "array" | "single";
+  }[];
   form: UseFormReturn<TFieldValues>;
   schemaMap: Partial<Record<Path<TFieldValues>, z.ZodObject<any>>>; // Typing it as partial
 }) {
-  const handleAddSection = (name: Path<TFieldValues>) => {
-    const currentValues = form.getValues(name) as
-      | PathValue<TFieldValues, Path<TFieldValues>>[]
-      | undefined;
-    const newSection = getEmptyObjectFromSchema(
-      schemaMap[name] as z.ZodObject<any>
-    );
-    form.setValue(name, [...(currentValues ?? []), newSection] as PathValue<
-      TFieldValues,
-      Path<TFieldValues>
-    >);
-    form.reset({
-      ...form.getValues(),
-      [name]: [...(currentValues ?? []), newSection] as PathValue<
+  const handleAddSection = (
+    name: Path<TFieldValues>,
+    type: "array" | "single"
+  ) => {
+    if (type === "single") {
+      const newSection = getEmptyObjectFromSchema(
+        schemaMap[name] as z.ZodObject<any>
+      );
+      form.setValue(
+        name,
+        newSection as PathValue<TFieldValues, Path<TFieldValues>>
+      );
+      form.reset({
+        ...form.getValues(),
+        [name]: newSection as PathValue<TFieldValues, Path<TFieldValues>>,
+      });
+    } else if (type === "array") {
+      const currentValues = form.getValues(name) as
+        | PathValue<TFieldValues, Path<TFieldValues>>[]
+        | undefined;
+      const newSection = getEmptyObjectFromSchema(
+        schemaMap[name] as z.ZodObject<any>
+      );
+      form.setValue(name, [...(currentValues ?? []), newSection] as PathValue<
         TFieldValues,
         Path<TFieldValues>
-      >,
-    });
+      >);
+      form.reset({
+        ...form.getValues(),
+        [name]: [...(currentValues ?? []), newSection] as PathValue<
+          TFieldValues,
+          Path<TFieldValues>
+        >,
+      });
+    }
   };
 
   return (
@@ -40,7 +61,7 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
         <Button
           key={section.name as string}
           type="button"
-          onClick={() => handleAddSection(section.name)}
+          onClick={() => handleAddSection(section.name, section.type)}
           className="rounded-xl"
         >
           <Plus className="text-white" />

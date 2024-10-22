@@ -11,13 +11,13 @@ export default function FormSectionHeader<TFieldValues extends FieldValues>({
 }: {
   name: Path<TFieldValues>; // Ensures `name` matches the form fields paths
   label: string;
-  index: number;
+  index?: number;
   form: ReturnType<typeof useForm<TFieldValues>>;
 }) {
   return (
     <div className="flex justify-between items-center">
       <Label className="text-lg">
-        {label} {index + 1}
+        {label} {index && index + 1}
       </Label>
       <Button
         type="button"
@@ -25,6 +25,10 @@ export default function FormSectionHeader<TFieldValues extends FieldValues>({
         aria-label="Remove section"
         className="border-destructive text-destructive"
         onClick={() => {
+					if (index === undefined) {
+						form.reset({ ...form.getValues(), [name]: undefined });
+						return;
+					}
           const entries = form.getValues(name);
           if (!entries) return;
 
