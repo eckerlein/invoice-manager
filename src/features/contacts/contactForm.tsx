@@ -161,12 +161,36 @@ export function ContactForm() {
           )}
         />
 
+        <FormSection
+          name="bankAccount"
+          label="Bankkonto"
+          form={form}
+          render={(index) => (
+            <>
+              <TextField
+                name={`bankAccount.${index}.accountHolder`}
+                label="Kontoinhaber"
+              />
+              <div className="grid grid-cols-3 gap-x-4">
+                <TextField
+                  name={`bankAccount.${index}.iban`}
+                  label="IBAN"
+                  className="col-span-2"
+                />
+                <TextField name={`bankAccount.${index}.bic`} label="BIC" />
+              </div>
+              <TextField name={`bankAccount.${index}.bankName`} label="Bank" />
+            </>
+          )}
+        />
+
         <FormSectionAdder
           form={form}
           sections={[
             { name: "address", label: "Addresse" },
             { name: "email", label: "Email" },
             { name: "phoneNumber", label: "Telefonnummer" },
+            { name: "bankAccount", label: "Bankkonto" },
           ]}
           schemaMap={{ address: addressSchema }}
         />
