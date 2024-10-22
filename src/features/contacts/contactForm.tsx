@@ -81,6 +81,7 @@ export function ContactForm() {
                 className="w-[180px]"
                 label="Art der Addresse"
                 options={addressSchema.shape.type._def.values}
+                defaultValue="billing"
               />
 
               <div className="grid grid-cols-3 gap-x-4 gap-y-2">
@@ -121,18 +122,20 @@ export function ContactForm() {
           label="Email"
           form={form}
           render={(index) => (
-            <>
+            <div className="flex gap-4">
               <TextField
                 name={`email.${index}.emailAddress`}
                 label="Email Addresse"
+                className="w-full"
               />
 
               <FormSelect
                 name={`email.${index}.type`}
-                label="Art der Email"
+                label="Typ"
                 options={emailSchema.shape.type._def.values}
+                defaultValue="businses"
               />
-            </>
+            </div>
           )}
         />
 
@@ -141,18 +144,20 @@ export function ContactForm() {
           label="Telefonnummer"
           form={form}
           render={(index) => (
-            <>
+            <div className="flex gap-4">
               <TextField
                 name={`phoneNumber.${index}.number`}
                 label="Telefonnummer"
+                className="w-full"
               />
 
               <FormSelect
                 name={`phoneNumber.${index}.type`}
-                label="Art der Telefonnummer"
+                label="Typ"
+                defaultValue="business"
                 options={phoneNumberSchema.shape.type._def.values}
               />
-            </>
+            </div>
           )}
         />
 
