@@ -1,13 +1,6 @@
 import { z } from "zod";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { FormSelect } from "../forms/components/FormSelect";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +11,7 @@ import { uid } from "uid";
 import TextField from "../forms/components/TextField";
 import FormGroupHeader from "../forms/components/FormGroupHeader";
 import FormSectionAdder from "../forms/components/FormSectionAdder";
+import { Label } from "@/components/ui/label";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -46,7 +40,7 @@ export function ContactForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-4 p-4"
       >
-        <h2>Kontakt</h2>
+        <Label className="text-lg">Kontakt</Label>
         <FormSelect
           name="baseInfo.type"
           className="w-[180px]"
@@ -55,53 +49,16 @@ export function ContactForm() {
         />
 
         {form.watch("baseInfo.type") === "company" ? (
-          <FormField
-            name="baseInfo.companyName"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input label="Name der Firma" placeholder="Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <TextField name="baseInfo.companyName" label="Name der Firma" />
         ) : (
           <div className="grid grid-cols-3 gap-4 w-full">
-            <FormField
+            <TextField
               name="baseInfo.title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input label="Titel" placeholder="dr." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Titel"
+              placeholder="Herr/Frau"
             />
-            <FormField
-              name="baseInfo.firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input label="Vorname" placeholder="Vorname" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="baseInfo.lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input label="Nachname" placeholder="Nachname" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <TextField name="baseInfo.firstName" label="Vorname" />
+            <TextField name="baseInfo.lastName" label="Nachname" />
           </div>
         )}
 
