@@ -66,7 +66,7 @@ export const baseContactInformationSchema = z.discriminatedUnion("type", [
 export const contactSchema = z.object({
   id: z.string(),
   baseInfo: baseContactInformationSchema,
-  address: addressSchema,
+  address: z.array(addressSchema).optional(),
   // email: emailSchema,
   // phoneNumber: phoneNumberSchema,
   // taxInfo: taxInfoSchema,
