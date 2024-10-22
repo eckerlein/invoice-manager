@@ -68,7 +68,7 @@ export const contactSchema = z.object({
   baseInfo: baseContactInformationSchema,
   address: z.array(addressSchema).optional(),
   email: z.array(emailSchema).optional(),
-  // phoneNumber: phoneNumberSchema,
+  phoneNumber: z.array(phoneNumberSchema).optional(),
   // taxInfo: taxInfoSchema,
   // bankAccount: bankAccountSchema,
 });

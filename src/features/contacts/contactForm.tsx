@@ -5,13 +5,20 @@ import FormSelect from "../forms/components/FormSelect";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
-import { addressSchema, contactSchema } from "./contactSchema";
+import {
+  addressSchema,
+  baseContactInformationSchema,
+  contactSchema,
+  emailSchema,
+  phoneNumberSchema,
+} from "./contactSchema";
 import { Button } from "@/components/ui/button";
 import { uid } from "uid";
 import TextField from "../forms/components/TextField";
 import FormSectionAdder from "../forms/components/FormSectionAdder";
 import { Label } from "@/components/ui/label";
 import FormSection from "../forms/components/FormSection";
+import getDiscriminatedUnionValues from "@/lib/utils/zod/getDiscriminatedUnionValues";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -45,7 +52,8 @@ export function ContactForm() {
           name="baseInfo.type"
           className="w-[180px]"
           label="Art des Kontaktes"
-          options={["company", "person"]}
+          // options={baseContactInformationSchema.shape.type._def.values}
+          options={getDiscriminatedUnionValues(baseContactInformationSchema)}
         />
 
         {form.watch("baseInfo.type") === "company" ? (
@@ -72,7 +80,7 @@ export function ContactForm() {
                 name={`address.${index}.type`}
                 className="w-[180px]"
                 label="Art der Addresse"
-                options={["billing", "shipping"]}
+                options={addressSchema.shape.type._def.values}
               />
 
               <div className="grid grid-cols-3 gap-x-4 gap-y-2">
@@ -122,7 +130,27 @@ export function ContactForm() {
               <FormSelect
                 name={`email.${index}.type`}
                 label="Art der Email"
-                options={["business", "personal", "office", "other"]}
+                options={emailSchema.shape.type._def.values}
+              />
+            </>
+          )}
+        />
+
+        <FormSection
+          name="phoneNumber"
+          label="Telefonnummer"
+          form={form}
+          render={(index) => (
+            <>
+              <TextField
+                name={`phoneNumber.${index}.number`}
+                label="Telefonnummer"
+              />
+
+              <FormSelect
+                name={`phoneNumber.${index}.type`}
+                label="Art der Telefonnummer"
+                options={phoneNumberSchema.shape.type._def.values}
               />
             </>
           )}
@@ -133,6 +161,7 @@ export function ContactForm() {
           sections={[
             { name: "address", label: "Addresse" },
             { name: "email", label: "Email" },
+            { name: "phoneNumber", label: "Telefonnummer" },
           ]}
           schemaMap={{ address: addressSchema }}
         />

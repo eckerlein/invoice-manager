@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { getEmptyObjectFromSchema } from "@/lib/getEmtpyObjectFromSchema";
+import { getEmptyObjectFromSchema } from "@/lib/utils/zod/getEmtpyObjectFromSchema";
 import { UseFormReturn, FieldValues, Path, PathValue } from "react-hook-form";
 import { z } from "zod";
 
