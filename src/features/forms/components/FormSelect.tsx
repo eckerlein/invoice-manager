@@ -12,17 +12,20 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { twMerge } from "tailwind-merge";
 
-export default function FormSelect({
+export default function FormSelect<T extends string>({
   name,
   label,
   options,
+  defaultValue,
   className,
 }: {
   name: string;
   label: string;
+  options: T[];
+  defaultValue?: T;
   className?: string;
-  options: string[];
 }) {
   return (
     <FormField
@@ -32,6 +35,7 @@ export default function FormSelect({
           <FormControl>
             <Select
               {...field}
+              defaultValue={defaultValue}
               onValueChange={(value) => {
                 console.log(value);
                 field.onChange(value);
@@ -39,7 +43,7 @@ export default function FormSelect({
             >
               <SelectTrigger
                 label={label}
-                className={className}
+                className={twMerge("w-[180px]", className)}
                 aria-label={label}
               >
                 <SelectValue placeholder={label} />
