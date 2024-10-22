@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { FormSelect } from "../forms/components/FormSelect";
+import FormSelect from "../forms/components/FormSelect";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";

@@ -10,12 +10,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 
-export function FormSelect({
+export default function FormSelect({
   name,
   label,
   options,
@@ -39,13 +37,22 @@ export function FormSelect({
                 field.onChange(value);
               }}
             >
-              <SelectTrigger label={label} className={className}>
+              <SelectTrigger
+                label={label}
+                className={className}
+                aria-label={label}
+              >
                 <SelectValue placeholder={label} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent role="listbox">
                 <SelectGroup>
                   {options.map((option) => (
-                    <SelectItem key={option} value={option}>
+                    <SelectItem
+                      key={option}
+                      value={option}
+                      role="option"
+                      aria-selected={field.value === option}
+                    >
                       {option}
                     </SelectItem>
                   ))}
