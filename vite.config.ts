@@ -9,6 +9,12 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig(async () => ({
   plugins: [TanStackRouterVite(), viteReact()],
 
+  test: {
+    environment: "jsdom", // Simulate a browser-like environment for testing
+    setupFiles: "./src/setupTests.ts", // Optional: for global test setup
+    globals: true, // Use global test helpers like `describe`, `test`, `expect`
+  },
+
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent vite from obscuring rust errors
