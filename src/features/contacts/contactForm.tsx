@@ -9,7 +9,7 @@ import { addressSchema, contactSchema } from "./contactSchema";
 import { Button } from "@/components/ui/button";
 import { uid } from "uid";
 import TextField from "../forms/components/TextField";
-import FormGroupHeader from "../forms/components/FormGroupHeader";
+import FormSectionHeader from "../forms/components/FormSectionHeader";
 import FormSectionAdder from "../forms/components/FormSectionAdder";
 import { Label } from "@/components/ui/label";
 
@@ -64,7 +64,7 @@ export function ContactForm() {
 
         {form.getValues("address")?.map((_, index) => (
           <div key={index} className="flex flex-col gap-2">
-            <FormGroupHeader
+            <FormSectionHeader
               name="address"
               label="Addresse"
               index={index}
@@ -110,9 +110,34 @@ export function ContactForm() {
           </div>
         ))}
 
+        {form.getValues("email")?.map((_, index) => (
+          <div key={index} className="flex flex-col gap-2">
+            <FormSectionHeader
+              name="email"
+              label="Email"
+              index={index}
+              form={form}
+            />
+
+            <TextField
+              name={`email.${index}.emailAddress`}
+              label="Email Addresse"
+            />
+
+            <FormSelect
+              name={`email.${index}.type`}
+              label="Art der Email"
+              options={["business", "personal", "office", "other"]}
+            />
+          </div>
+        ))}
+
         <FormSectionAdder
           form={form}
-          sections={[{ name: "address", label: "Addresse" }]}
+          sections={[
+            { name: "address", label: "Addresse" },
+            { name: "email", label: "Email" },
+          ]}
           schemaMap={{ address: addressSchema }}
         />
         <Button type="submit">Submit</Button>
