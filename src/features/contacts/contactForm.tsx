@@ -12,15 +12,22 @@ import { FormSelect } from "../forms/components/FormSelect";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
-import { contactSchema } from "./contactSchema";
+import { addressSchema, contactSchema } from "./contactSchema";
 import { Button } from "@/components/ui/button";
 import { uid } from "uid";
+import { Plus } from "lucide-react";
+import TextField from "../forms/components/TextField";
+import { getEmptyObjectFromSchema } from "@/lib/getEmtpyObjectFromSchema";
+import FormGroupHeader from "../forms/components/FormGroupHeader";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       id: uid(),
+      baseInfo: {
+        type: "company",
+      },
     },
   });
   function onSubmit(data: z.infer<typeof contactSchema>) {
@@ -32,6 +39,14 @@ export function ContactForm() {
         </pre>
       ),
     });
+  }
+
+  function addAddress() {
+    form.setValue("address", [
+      ...(form.getValues("address") ?? []),
+      getEmptyObjectFromSchema(addressSchema),
+    ]);
+    form.trigger("address");
   }
 
   return (
@@ -98,101 +113,65 @@ export function ContactForm() {
             />
           </div>
         )}
-        <h2>Addresse</h2>
 
-        <FormSelect
-          name="address.type"
-          className="w-[180px]"
-          label="Art der Addresse"
-          options={["billing", "shipping"]}
-        />
+        {form.getValues("address")?.map((_, index) => (
+          <div key={index} className="flex flex-col gap-2">
+            <FormGroupHeader
+              name="address"
+              label="Addresse"
+              index={index}
+              form={form}
+            />
 
-        <FormField
-          name="address.additionalInfo"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  label="Addresszusatz"
-                  placeholder="Addresszusatz"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormSelect
+              name={`address.${index}.type`}
+              className="w-[180px]"
+              label="Art der Addresse"
+              options={["billing", "shipping"]}
+            />
 
-        <div className="grid grid-cols-3 gap-4">
-          <FormField
-            name="address.street"
-            render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormControl>
-                  <Input label="Straße" placeholder="Straße" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <div className="grid grid-cols-3 gap-x-4 gap-y-2">
+              <TextField
+                name={`address.${index}.street`}
+                className="col-span-2"
+                label="Straße"
+              />
+              <TextField
+                name={`address.${index}.streetNumber`}
+                label="Nr."
+                type="number"
+              />
+              <TextField
+                name={`address.${index}.postalCode`}
+                label="Postleitzahl"
+                type="number"
+              />
+              <TextField
+                name={`address.${index}.city`}
+                className="col-span-2"
+                label="Stadt"
+              />
+            </div>
 
-          <FormField
-            name="address.streetNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    label="Nr."
-                    type="number"
-                    placeholder="Nr."
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="address.postalCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    label="Postleitzahl"
-                    type="number"
-                    placeholder="Postleitzahl"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="address.city"
-            render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormControl>
-                  <Input label="Stadt" placeholder="Stadt" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <TextField
+              name={`address.${index}.additionalInfo`}
+              label="Addresszusatz"
+            />
+
+            <TextField name={`address.${index}.country`} label="Land" />
+          </div>
+        ))}
+
+        <div className="flex w-full flex-wrap gap-4">
+          <Button
+            type="button"
+            onClick={() => addAddress()}
+            className="rounded-xl"
+          >
+            <Plus className="text-white" />
+            Addresse
+          </Button>
         </div>
-        <FormField
-          name="address.country"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input label="Land" placeholder="Land" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
