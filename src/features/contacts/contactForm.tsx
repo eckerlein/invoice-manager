@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import FormSectionArray from "../forms/components/FormSectionArray";
 import getDiscriminatedUnionValues from "@/lib/utils/zod/getDiscriminatedUnionValues";
 import FormSectionSingle from "../forms/components/FormSectionSingle";
+import contactStore from "./contactStore";
 
 export function ContactForm() {
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -33,14 +34,17 @@ export function ContactForm() {
       },
     },
   });
-  function onSubmit(data: z.infer<typeof contactSchema>) {
+  async function onSubmit(data: z.infer<typeof contactSchema>) {
+    const err = await contactStore.saveContact(data);
+    if (err) {
+      return toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
+    }
     toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+      title: "Contact created",
     });
   }
 

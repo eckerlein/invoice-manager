@@ -5,9 +5,12 @@ const contactStore = await load("store/contact.json");
 
 async function saveContact(contact: Contact) {
   const { error, data } = contactSchema.safeParse(contact);
-  if (error) return { error };
+  if (error) return error;
 
   const { id, ...rest } = data;
+  if (await contactStore.get(id))
+    return new Error("Contact with this ID already exists");
+
   await contactStore.set(id, rest);
 }
 
