@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as InvoicesIndexImport } from './routes/invoices/index'
 import { Route as ContactsIndexImport } from './routes/contacts/index'
+import { Route as ContactsCreateImport } from './routes/contacts/create'
 
 // Create/Update Routes
 
@@ -35,6 +36,12 @@ const ContactsIndexRoute = ContactsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ContactsCreateRoute = ContactsCreateImport.update({
+  id: '/contacts/create',
+  path: '/contacts/create',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -44,6 +51,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/contacts/create': {
+      id: '/contacts/create'
+      path: '/contacts/create'
+      fullPath: '/contacts/create'
+      preLoaderRoute: typeof ContactsCreateImport
       parentRoute: typeof rootRoute
     }
     '/contacts/': {
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contacts/create': typeof ContactsCreateRoute
   '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contacts/create': typeof ContactsCreateRoute
   '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
@@ -80,27 +96,30 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/contacts/create': typeof ContactsCreateRoute
   '/contacts/': typeof ContactsIndexRoute
   '/invoices/': typeof InvoicesIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contacts' | '/invoices'
+  fullPaths: '/' | '/contacts/create' | '/contacts' | '/invoices'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contacts' | '/invoices'
-  id: '__root__' | '/' | '/contacts/' | '/invoices/'
+  to: '/' | '/contacts/create' | '/contacts' | '/invoices'
+  id: '__root__' | '/' | '/contacts/create' | '/contacts/' | '/invoices/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactsCreateRoute: typeof ContactsCreateRoute
   ContactsIndexRoute: typeof ContactsIndexRoute
   InvoicesIndexRoute: typeof InvoicesIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactsCreateRoute: ContactsCreateRoute,
   ContactsIndexRoute: ContactsIndexRoute,
   InvoicesIndexRoute: InvoicesIndexRoute,
 }
@@ -118,12 +137,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/contacts/create",
         "/contacts/",
         "/invoices/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/contacts/create": {
+      "filePath": "contacts/create.tsx"
     },
     "/contacts/": {
       "filePath": "contacts/index.tsx"

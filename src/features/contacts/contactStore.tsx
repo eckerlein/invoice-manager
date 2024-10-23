@@ -3,7 +3,7 @@ import { Contact, contactSchema } from "./contactSchema";
 
 const contactStore = await load("store/contact.json");
 
-async function saveContact(contact: Contact) {
+async function set(contact: Contact) {
   const { error, data } = contactSchema.safeParse(contact);
   if (error) return error;
 
@@ -14,14 +14,14 @@ async function saveContact(contact: Contact) {
   await contactStore.set(id, rest);
 }
 
-async function getContact(id: string): Promise<Contact | undefined> {
+async function get(id: string): Promise<Contact | undefined> {
   const data = await contactStore.get<Omit<Contact, "id">>(id);
   if (!data) return;
   return { id, ...data };
 }
 
 export default {
-	...contactStore,
-	saveContact,
-	getContact,
-}
+  store: contactStore,
+  set,
+  get,
+};
