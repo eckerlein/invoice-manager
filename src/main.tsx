@@ -5,6 +5,11 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 import "./main.css";
+import { migrate } from "./features/database/migrate";
+
+await migrate().catch((e) => {
+  console.error(e);
+});
 
 // Create a new router instance
 const router = createRouter({ routeTree });

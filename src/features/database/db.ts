@@ -1,21 +1,57 @@
 import Database from "@tauri-apps/plugin-sql";
+import { drizzle } from "drizzle-orm/sqlite-proxy";
+import * as schema from "./schema";
 
-export async function setupDatabase() {
-  // Open a connection to the SQLite database
-  const db = await Database.load("sqlite:mydb.db");
+/**
+ * Represents the result of a SELECT query.
+ */
+export type SelectQueryResult = {
+  [key: string]: any;
+};
 
-  // Create a table
-  await db.select(
-    `CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT NOT NULL);`,
-    []
-  );
+export const sqlite = await Database.load("sqlite:mydb.db");
 
-  // Insert a record
-  await db.execute(`INSERT INTO users (name) VALUES (?);`, ["Alice"]);
+/**
+ * The drizzle database instance.
+ */
+export const db = drizzle<typeof schema>(
+  async (sql, params, method) => {
+    let rows: any = [];
+    let results = [];
 
-  // Select data
-  const result = await db.select(`SELECT * FROM users;`, []);
-  console.log(result);
+    // If the query is a SELECT, use the select method
+    if (isSelectQuery(sql)) {
+      rows = await sqlite.select(sql, params).catch((e) => {
+        console.error("SQL Error:", e);
+        return [];
+      });
+    } else {
+      // Otherwise, use the execute method
+      rows = await sqlite.execute(sql, params).catch((e) => {
+        console.error("SQL Error:", e);
+        return [];
+      });
+      return { rows: [] };
+    }
+
+    rows = rows.map((row: any) => {
+      return Object.values(row);
+    });
+    // If the method is "all", return all rows
+    results = method === "all" || method === "run" ? rows : rows[0];
+
+    return { rows: results };
+  },
+  // Pass the schema to the drizzle instance
+  { schema: schema, logger: true }
+);
+
+/**
+ * Checks if the given SQL query is a SELECT query.
+ * @param sql The SQL query to check.
+ * @returns True if the query is a SELECT query, false otherwise.
+ */
+function isSelectQuery(sql: string): boolean {
+  const selectRegex = /^\s*SELECT\b/i;
+  return selectRegex.test(sql);
 }
-
-setupDatabase().catch(console.error);

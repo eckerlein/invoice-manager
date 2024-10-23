@@ -8,6 +8,13 @@
     "shell:allow-open",
     "sql:default",
     "sql:allow-execute",
-    "sql:allow-select"
+    "sql:allow-select",
+    "fs:default",
+    "fs:allow-read-text-file",
+    "fs:allow-resource-read-recursive",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "$APPDATA/*" }]
+    }
   ]
 }
