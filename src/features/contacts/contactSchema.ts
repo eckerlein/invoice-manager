@@ -78,6 +78,6 @@ export type Address = z.infer<typeof addressSchema>;
 export type Email = z.infer<typeof emailSchema>;
 export type PhoneNumber = z.infer<typeof phoneNumberSchema>;
 export type TaxInfo = z.infer<typeof taxInfoSchema>;
-export type Representative = z.infer<typeof representativeSchema>;
+// export type Representative = z.infer<typeof representativeSchema>;
 export type BankAccount = z.infer<typeof bankAccountSchema>;
 export type Contact = z.infer<typeof contactSchema>;
