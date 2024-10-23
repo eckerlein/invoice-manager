@@ -12,11 +12,13 @@ const TextField = ({
   placeholder,
   className,
   type,
+  disabled,
 }: {
   name: string;
   label: string;
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
   type?: "text" | "number";
 }) => {
   return (
@@ -30,6 +32,7 @@ const TextField = ({
                 label={label}
                 placeholder={placeholder ?? label}
                 type={type}
+                disabled={disabled}
                 onChange={(e) => {
                   type === "number"
                     ? onChange(Number(e.target.value))
