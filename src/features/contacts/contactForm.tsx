@@ -51,6 +51,7 @@ export function ContactForm() {
         className="flex flex-col gap-4 p-4"
       >
         <Label className="text-lg">Kontakt</Label>
+
         <FormSelect
           name="baseInfo.type"
           className="w-[180px]"
@@ -58,6 +59,7 @@ export function ContactForm() {
           // options={baseContactInformationSchema.shape.type._def.values}
           options={getDiscriminatedUnionValues(baseContactInformationSchema)}
         />
+        <TextField name="id" label="Kundennummer" disabled={true} />
 
         {form.watch("baseInfo.type") === "company" ? (
           <TextField name="baseInfo.companyName" label="Name der Firma" />
