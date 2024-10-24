@@ -21,7 +21,7 @@ export const Route = createFileRoute("/contacts/")({
       <header className="px-4">
         <h1 className="text-xl">Kontakte</h1>
       </header>
-      <nav className="absolute bottom-0 right-0 mx-4">
+      <nav className="absolute bottom-0 right-0 mx-4 my-2">
         <Link
           to="/contacts/create"
           className={buttonVariants({ variant: "default" })}
