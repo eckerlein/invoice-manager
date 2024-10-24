@@ -51,6 +51,7 @@ export const Route = createFileRoute("/contacts/$contactId")({
     return (
       <main>
         <PageHeader
+          showBackButton={true}
           title={
             <>
               <span className="font-bold">{getContactName(data)}</span>{" "}
