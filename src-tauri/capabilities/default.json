@@ -2,31 +2,55 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": ["main"],
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "core:default",
     "shell:allow-open",
     "store:default",
+    "dialog:allow-open",
     "fs:default",
     {
       "identifier": "fs:allow-write",
-      "allow": [{ "path": "$APPDATA/**" }]
+      "allow": [
+        {
+          "path": "$APPDATA/**"
+        }
+      ]
     },
     {
       "identifier": "fs:allow-read",
-      "allow": [{ "path": "$APPDATA/**" }]
+      "allow": [
+        {
+          "path": "$APPDATA/**"
+        }
+      ]
     },
     {
       "identifier": "fs:allow-app-write-recursive",
-      "allow": [{ "path": "$APPDATA/fileUploadCache/**" }]
+      "allow": [
+        {
+          "path": "$APPDATA/fileUploadCache/**"
+        }
+      ]
     },
     {
       "identifier": "fs:allow-app-read-recursive",
-      "allow": [{ "path": "$APPDATA/fileUploadCache/**" }]
+      "allow": [
+        {
+          "path": "$APPDATA/fileUploadCache/**"
+        }
+      ]
     },
     {
       "identifier": "fs:allow-create",
-      "allow": [{ "path": "$APPDATA/fileUploadCache/**" }]
-    }
+      "allow": [
+        {
+          "path": "$APPDATA/fileUploadCache/**"
+        }
+      ]
+    },
+    "dialog:default"
   ]
 }
