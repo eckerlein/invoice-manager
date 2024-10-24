@@ -13,10 +13,10 @@ function RootComponent() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full h-full">
+      <main className="w-full h-screen">
         <Outlet />
         <Toaster />
-        <TanStackRouterDevtools position="bottom-right" />
+        <TanStackRouterDevtools position="bottom-left" />
       </main>
     </SidebarProvider>
   );
