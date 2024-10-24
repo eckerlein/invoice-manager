@@ -80,7 +80,13 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
           <FormDatePicker label="Rechnungsdatum" name="documentDate" />
           <FormDatePicker label="Erhalten am" name="receivedDate" />
         </div>
-        <FileUploadField name={"test"} />
+        <FileUploadField
+          name={"test"}
+          accept={{
+            "image/*": ["jpg", "jpeg", "png"],
+          }}
+          label={"Rechnung"}
+        />
 
         <TextField name="amount" label="Betrag" type="number" />
         <TextField name="contact" label="Kontakt" />
