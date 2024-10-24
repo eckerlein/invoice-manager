@@ -2,10 +2,11 @@ import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
 import FormSelect from "../forms/components/FormSelect";
-import { useForm } from "react-hook-form";
+import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import {
+  Contact,
   addressSchema,
   bankAccountSchema,
   baseContactInformationSchema,
@@ -24,18 +25,26 @@ import getDiscriminatedUnionValues from "@/lib/utils/zod/getDiscriminatedUnionVa
 import FormSectionSingle from "../forms/components/FormSectionSingle";
 import contactStore from "./contactStore";
 
-export function ContactForm() {
+export function ContactForm({
+  defaultValues,
+  formType,
+}: {
+  defaultValues?: DefaultValues<Contact>;
+  formType?: "create" | "update";
+}) {
+  defaultValues ??= {
+    id: uid(),
+    baseInfo: {
+      type: "company",
+    },
+  };
+
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
-    defaultValues: {
-      id: uid(),
-      baseInfo: {
-        type: "company",
-      },
-    },
+    defaultValues,
   });
   async function onSubmit(data: z.infer<typeof contactSchema>) {
-    const err = await contactStore.saveContact(data);
+    const err = await contactStore.set(data);
     if (err) {
       return toast({
         title: "Error",
@@ -44,7 +53,7 @@ export function ContactForm() {
       });
     }
     toast({
-      title: "Contact created",
+      title: `Kontakt ${formType === "create" ? "erstellt" : "aktualisiert"}`,
     });
   }
 
