@@ -26,7 +26,7 @@ const SelectTrigger = React.forwardRef<
     )}
   >
     {label && (
-      <legend className="mx-2 text-sm font-medium ">
+      <legend className="mx-2 text-xs font-medium ">
         {/* Ensure the label has the same background and padding */}
         <span className="text-muted-foreground px-1 bg-background">
           {label}

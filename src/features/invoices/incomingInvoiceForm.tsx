@@ -13,6 +13,7 @@ import React, { forwardRef, useImperativeHandle } from "react";
 import { twMerge } from "tailwind-merge";
 import { incomingInvoiceSchema } from "./invoiceSchema";
 import { Form } from "@/components/ui/form";
+import DatePicker from "@/components/ui/datepicker";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<void>;
@@ -73,7 +74,9 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
       >
         <TextField name="id" label="Belegnummer" disabled={true} />
         <TextField name="name" label="Titel" />
-        <TextField name="documentDate" label="Rechnungsdatum" type="date" />
+        {/* <TextField name="documentDate" label="Rechnungsdatum" type="date" /> */}
+        <DatePicker label="Rechnungsdatum" />
+
         <TextField name="receivedDate" label="Erhalten am" type="date" />
         <TextField name="amount" label="Betrag" type="number" />
         <TextField name="contact" label="Kontakt" />
