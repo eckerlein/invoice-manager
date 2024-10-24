@@ -4,7 +4,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import DatePicker from "@/components/ui/datepicker";
+import DatePicker from "@/components/ui/datePicker";
 
 export default ({
   name,
