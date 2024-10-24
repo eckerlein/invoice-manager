@@ -1,19 +1,14 @@
 import { z } from "zod";
 
-import FormSelect from "../forms/components/FormSelect";
 import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
 import { uid } from "uid";
 import TextField from "../forms/components/TextField";
-import FormSectionAdder from "../forms/components/FormSectionAdder";
-import FormSectionArray from "../forms/components/FormSectionArray";
 import React, { forwardRef, useImperativeHandle } from "react";
 import { twMerge } from "tailwind-merge";
 import { incomingInvoiceSchema } from "./invoiceSchema";
 import { Form } from "@/components/ui/form";
-import DatePicker from "@/components/ui/datepicker";
 import FormDatePicker from "../forms/components/FormDatePicker";
 import { FileUploadField } from "@/components/ui/fileDrop";
 
@@ -65,13 +60,13 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
   }
 
   useImperativeHandle<IncomingInvoiceFormRef, any>(ref, () => ({
-    submit: () => form.handleSubmit(onSubmit)(),
+    submit: () => form.handleSubmit(onSubmit, (e) => console.error(e))(),
   }));
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, (e) => console.error(e))}
         className={twMerge("flex flex-col gap-4", className)}
       >
         <TextField name="id" label="Belegnummer" disabled={true} />
@@ -80,7 +75,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
           <FormDatePicker label="Rechnungsdatum" name="documentDate" />
           <FormDatePicker label="Erhalten am" name="receivedDate" />
         </div>
-        <FileUploadField name={"test"} label="Test" />
+        <FileUploadField name="uploadedDocuments" label="Test" />
 
         <TextField name="amount" label="Betrag" type="number" />
         <TextField name="contact" label="Kontakt" />

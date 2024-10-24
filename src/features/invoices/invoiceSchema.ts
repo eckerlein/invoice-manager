@@ -26,5 +26,5 @@ export const incomingInvoiceSchema = z.object({
   receivedDate: z.date(),
   amount: z.number(),
   contact: z.string().optional(),
-  // uploadedDocument: z.string(),
+  uploadedDocuments: z.array(z.string()),
 });
