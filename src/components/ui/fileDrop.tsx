@@ -12,34 +12,43 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { UploadIcon, FileIcon, TrashIcon } from "lucide-react";
-import { ensureDirectoryExists } from "@/features/invoices/invoiceFileCache";
 import { Label } from "./label";
 import { TauriDragDropEvent } from "@/lib/utils/tauri/types";
+import { ensureNestedDirectoryExists } from "@/lib/utils/tauri/diskUtils";
+import { sep } from "@tauri-apps/api/path";
 
 // Utility function to copy dropped files into a cache directory
 async function handleFileCache(
   filePath: string,
-  fileName: string
+  fileName: string,
+  id: string = uid()
 ): Promise<string> {
-  const uuidFileName = `${uid()}-${fileName}`;
-  const cachedFilePath = `fileUploadCache/${uuidFileName}`;
+  const path = ["fileUploadCache", id, fileName] as const;
+  const cachedFilePath = path.join(sep());
 
-  await ensureDirectoryExists();
+  await ensureNestedDirectoryExists(path[0], path[1]);
+
   await copyFile(filePath, cachedFilePath, {
     fromPathBaseDir: BaseDirectory.AppData,
     toPathBaseDir: BaseDirectory.AppData,
   });
 
-  return uuidFileName; // Return the new unique file name
+  return fileName; // Return the new unique file name
 }
 
 interface FileUploadFieldProps {
   name: string;
   label: string;
   accept?: string;
+  id: string;
 }
 
-export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
+export function FileUploadField({
+  name,
+  label,
+  accept,
+  id,
+}: FileUploadFieldProps) {
   const [isDragging, setIsDragging] = useState(false);
   const dropZoneRef = useRef<HTMLDivElement | null>(null);
 
@@ -64,7 +73,7 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
       const updatedFiles = await Promise.all(
         selectedFiles.map(async (filePath) => {
           const fileName = filePath.split("/").pop() ?? "unknown";
-          const cachedFileName = await handleFileCache(filePath, fileName);
+          const cachedFileName = await handleFileCache(filePath, fileName, id);
           return cachedFileName;
         })
       );
@@ -105,7 +114,8 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
                 const fileName = filePath.split("/").pop() ?? "unknown";
                 const cachedFileName = await handleFileCache(
                   filePath,
-                  fileName
+                  fileName,
+                  id
                 );
                 return cachedFileName;
               })

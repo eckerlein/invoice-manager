@@ -21,6 +21,7 @@ type IncomingInvoiceFormProps = {
   formType?: "create" | "update";
   showButton?: boolean;
   className?: string;
+  invoiceId?: string;
 };
 
 export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
@@ -29,6 +30,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
     formType,
     showButton = true,
     className,
+    invoiceId,
   }: IncomingInvoiceFormProps,
   ref: React.Ref<IncomingInvoiceFormRef>
 ) {
@@ -75,7 +77,11 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
           <FormDatePicker label="Rechnungsdatum" name="documentDate" />
           <FormDatePicker label="Erhalten am" name="receivedDate" />
         </div>
-        <FileUploadField name="uploadedDocuments" label="Test" />
+        <FileUploadField
+          name="uploadedDocuments"
+          label="Test"
+          id={form.getValues("id")}
+        />
 
         <TextField name="amount" label="Betrag" type="number" />
         <TextField name="contact" label="Kontakt" />
