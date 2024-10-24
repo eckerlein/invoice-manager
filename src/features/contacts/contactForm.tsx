@@ -19,19 +19,31 @@ import { Button } from "@/components/ui/button";
 import { uid } from "uid";
 import TextField from "../forms/components/TextField";
 import FormSectionAdder from "../forms/components/FormSectionAdder";
-import { Label } from "@/components/ui/label";
 import FormSectionArray from "../forms/components/FormSectionArray";
 import getDiscriminatedUnionValues from "@/lib/utils/zod/getDiscriminatedUnionValues";
 import FormSectionSingle from "../forms/components/FormSectionSingle";
 import contactStore from "./contactStore";
+import { twMerge } from "tailwind-merge";
+import React, { forwardRef, useImperativeHandle } from "react";
 
-export function ContactForm({
-  defaultValues,
-  formType,
-}: {
-  defaultValues?: DefaultValues<Contact>;
-  formType?: "create" | "update";
-}) {
+export type ContactFormRef = {
+  submit: () => void;
+};
+
+export const ContactForm = forwardRef(function ContactForm(
+  {
+    defaultValues,
+    formType,
+    showButton = true,
+    className,
+  }: {
+    defaultValues?: DefaultValues<Contact>;
+    formType?: "create" | "update";
+    showButton?: boolean;
+    className?: string;
+  },
+  ref: React.Ref<ContactFormRef>
+) {
   defaultValues ??= {
     id: uid(),
     baseInfo: {
@@ -57,11 +69,19 @@ export function ContactForm({
     });
   }
 
+  useImperativeHandle<ContactFormRef, any>(ref, () => ({
+    submit: () => form.handleSubmit(onSubmit)(),
+  }));
+
+  // useImperativeHandle(ref, () => ({
+  //   submit: () => form.handleSubmit(onSubmit)(), // Expose submit function
+  // }));
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
+        className={twMerge("flex flex-col gap-4", className)}
       >
         {/* <Label className="text-lg">Kontakt</Label> */}
 
@@ -227,8 +247,12 @@ export function ContactForm({
             taxInfo: taxInfoSchema,
           }}
         />
-        <Button type="submit">Speichern</Button>
+        {showButton && (
+          <Button className="" type="submit">
+            Speichern
+          </Button>
+        )}
       </form>
     </Form>
   );
-}
+});
