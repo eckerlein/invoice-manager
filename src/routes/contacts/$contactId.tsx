@@ -3,7 +3,11 @@ import { ContactForm } from "@/features/contacts/contactForm";
 import { Contact } from "@/features/contacts/contactSchema";
 import contactStore from "@/features/contacts/contactStore";
 import { getContactName } from "@/features/contacts/contactUtils";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/contacts/$contactId")({
@@ -13,6 +17,8 @@ export const Route = createFileRoute("/contacts/$contactId")({
     const [data, setData] = useState<Contact>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
       contactStore
@@ -42,7 +48,15 @@ export const Route = createFileRoute("/contacts/$contactId")({
           <h1 className="text-xl">
             <span className="font-bold">{getContactName(data)}</span> anpassen:
           </h1>
-          <Button variant="destuctiveOutline">Löschen</Button>
+          <Button
+            variant="destuctiveOutline"
+            onClick={() => {
+              contactStore.delete(contactId);
+              navigate({ to: "/contacts" });
+            }}
+          >
+            Löschen
+          </Button>
         </header>
         <ContactForm defaultValues={data} />
       </>
