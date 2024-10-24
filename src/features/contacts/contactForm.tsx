@@ -61,15 +61,14 @@ export function ContactForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 p-4"
+        className="flex flex-col gap-4"
       >
-        <Label className="text-lg">Kontakt</Label>
+        {/* <Label className="text-lg">Kontakt</Label> */}
 
         <FormSelect
           name="baseInfo.type"
           className="w-[180px]"
           label="Art des Kontaktes"
-          // options={baseContactInformationSchema.shape.type._def.values}
           options={getDiscriminatedUnionValues(baseContactInformationSchema)}
         />
         <TextField name="id" label="Kundennummer" disabled={true} />
@@ -116,7 +115,7 @@ export function ContactForm({
                 <TextField
                   name={`address.${index}.postalCode`}
                   label="Postleitzahl"
-                  type="number"
+                  type="stringNumber"
                 />
                 <TextField
                   name={`address.${index}.city`}
@@ -228,7 +227,7 @@ export function ContactForm({
             taxInfo: taxInfoSchema,
           }}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Speichern</Button>
       </form>
     </Form>
   );

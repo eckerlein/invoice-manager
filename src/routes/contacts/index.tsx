@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Suspense, useEffect, useState } from "react";
 import contactStore from "@/features/contacts/contactStore";
+import { getContactName } from "@/features/contacts/contactUtils";
 
 export const Route = createFileRoute("/contacts/")({
   component: () => (
@@ -76,11 +77,7 @@ function ContactRows() {
           tabIndex={0} // Allow the row to be focusable via keyboard
           aria-label={`View details for ${contact.baseInfo?.type === "person" ? contact.baseInfo.firstName : contact.baseInfo?.companyName}`}
         >
-          <TableCell>
-            {contact.baseInfo?.type === "person"
-              ? `${contact.baseInfo.firstName} ${contact.baseInfo.lastName}`
-              : contact.baseInfo?.companyName}
-          </TableCell>
+          <TableCell>{getContactName(contact)}</TableCell>
           <TableCell>{id}</TableCell>
           <TableCell>
             {contact.address?.reduce(

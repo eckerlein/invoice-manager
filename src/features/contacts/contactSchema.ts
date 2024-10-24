@@ -6,7 +6,9 @@ export const addressSchema = z.object({
   additionalInfo: z.string().optional(),
   street: z.string(),
   streetNumber: z.number(),
-  postalCode: z.number(),
+  postalCode: z.string().refine((val) => /^[0-9]{5}$/.test(val), {
+    message: "Postleitzahl muss 5 Zahlen lang sein",
+  }),
   city: z.string(),
   country: z.string(),
 });
