@@ -90,13 +90,15 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
     files: string[]
   ) => {
     useEffect(() => {
-      const unlisten = listen(
+      // Listen to the drag drop event
+      const unlistenDragDrop = listen(
         TauriEvent.DRAG_DROP,
         async (event: TauriDragDropEvent) => {
           const {
             position: { x, y },
             paths,
           } = event.payload;
+
           if (isCursorOverDropZone(x, y)) {
             const updatedFiles = await Promise.all(
               paths.map(async (filePath: string) => {
@@ -110,13 +112,29 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
             );
             onChange([...files, ...updatedFiles]);
           }
+
+          setIsDragging(false); // Reset dragging state after files are dropped
         }
       );
 
+      const unlistenDragEnter = listen(TauriEvent.DRAG_ENTER, () => {
+        setIsDragging(true);
+      });
+      const unlistenDragOver = listen(TauriEvent.DRAG_OVER, () => {
+        setIsDragging(true);
+      });
+      const unlistenDragLeave = listen(TauriEvent.DRAG_LEAVE, () => {
+        setIsDragging(false);
+      });
+
       return () => {
-        unlisten.then((fn) => fn());
+        // Clean up all the listeners when the component unmounts
+        unlistenDragDrop.then((fn) => fn());
+        unlistenDragEnter.then((fn) => fn());
+        unlistenDragOver.then((fn) => fn());
+        unlistenDragLeave.then((fn) => fn());
       };
-    }, [files]);
+    }, [files, onChange]);
   };
 
   // Handle file removal
