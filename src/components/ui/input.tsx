@@ -14,7 +14,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         className={cn(
           "relative w-full rounded-md border border-input bg-background text-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
           "focus-within:border-primary", // Change border color on focus
-          "hover:border-primary", // Change border color on hover
+          !props.disabled && "hover:border-primary", // Change border color on hover
           className
         )}
       >
