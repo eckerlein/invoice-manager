@@ -27,7 +27,7 @@ import { twMerge } from "tailwind-merge";
 import React, { forwardRef, useImperativeHandle } from "react";
 
 export type ContactFormRef = {
-  submit: () => void;
+  submit: () => Promise<void>;
 };
 
 export const ContactForm = forwardRef(function ContactForm(
@@ -73,9 +73,6 @@ export const ContactForm = forwardRef(function ContactForm(
     submit: () => form.handleSubmit(onSubmit)(),
   }));
 
-  // useImperativeHandle(ref, () => ({
-  //   submit: () => form.handleSubmit(onSubmit)(), // Expose submit function
-  // }));
 
   return (
     <Form {...form}>
@@ -83,8 +80,6 @@ export const ContactForm = forwardRef(function ContactForm(
         onSubmit={form.handleSubmit(onSubmit)}
         className={twMerge("flex flex-col gap-4", className)}
       >
-        {/* <Label className="text-lg">Kontakt</Label> */}
-
         <FormSelect
           name="baseInfo.type"
           className="w-[180px]"

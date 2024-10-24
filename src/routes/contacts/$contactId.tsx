@@ -49,7 +49,7 @@ export const Route = createFileRoute("/contacts/$contactId")({
     }
 
     return (
-      <main className="h-full">
+      <main>
         <PageHeader
           title={
             <>
