@@ -67,7 +67,27 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
 
   return (
     <Form {...form}>
-      <form></form>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={twMerge("flex flex-col gap-4", className)}
+      >
+        <TextField name="id" label="Belegnummer" disabled={true} />
+        <TextField name="name" label="Titel" />
+        <TextField name="documentDate" label="Rechnungsdatum" type="date" />
+        <TextField name="receivedDate" label="Erhalten am" type="date" />
+        <TextField name="amount" label="Betrag" type="number" />
+        <TextField name="contact" label="Kontakt" />
+      </form>
     </Form>
   );
 });
+
+// export const incomingInvoiceSchema = z.object({
+// 	id: z.string(),
+// 	name: z.string(),
+// 	documentDate: z.date(),
+// 	amount: z.number(),
+// 	contact: z.string().optional(),
+// 	uploadedDocument: z.string(),
+// 	receivedDate: z.date(),
+// })
