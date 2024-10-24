@@ -1,7 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { uid } from "uid";
+import { TauriEvent, listen } from "@tauri-apps/api/event";
+import { BaseDirectory, writeFile, copyFile } from "@tauri-apps/plugin-fs";
 import {
   FormItem,
   FormLabel,
@@ -10,7 +11,26 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { UploadIcon, FileIcon, XIcon } from "lucide-react";
-import { useDropzone } from "react-dropzone";
+import { Label } from "./label";
+import { ensureDirectoryExists } from "@/features/invoices/invoiceFileCache";
+
+// Utility function to copy dropped files into a cache directory
+async function handleFileCache(
+  filePath: string,
+  fileName: string
+): Promise<string> {
+  const uuidFileName = `${uid()}-${fileName}`;
+  const cachedFilePath = `fileUploadCache/${uuidFileName}`;
+
+  await ensureDirectoryExists();
+  // Copy file to AppData folder under 'fileUploadCache'
+  await copyFile(filePath, cachedFilePath, {
+    fromPathBaseDir: BaseDirectory.AppData,
+    toPathBaseDir: BaseDirectory.AppData,
+  });
+
+  return uuidFileName; // Return the new unique file name
+}
 
 interface FileUploadFieldProps {
   name: string;
@@ -21,20 +41,46 @@ interface FileUploadFieldProps {
 export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
   const { setValue, watch } = useFormContext();
   const files = watch(name) || [];
+  const [isDragging, setIsDragging] = useState(false);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      setValue(name, [...files, ...acceptedFiles], { shouldValidate: true });
-    },
-    [name, files, setValue]
-  );
+  // Handle file selection via input click
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event);
+    const selectedFiles = Array.from(event.target.files || []);
+    const updatedFiles = await Promise.all(
+      selectedFiles.map(async (file) => {
+        const cachedFileName = await handleFileCache(file.path, file.name);
+        return cachedFileName;
+      })
+    );
+    setValue(name, [...files, ...updatedFiles], { shouldValidate: true });
+  };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: accept ? { [accept]: [] } : undefined,
-    multiple: true,
-  });
+  // Handle drag-and-drop event via Tauri's event listener
+  useEffect(() => {
+    const unlisten = listen(TauriEvent.DRAG_DROP, async (event: any) => {
+      console.log("Dropped files:", event.payload.paths);
 
+      const droppedFiles = event.payload.paths;
+      const updatedFiles = await Promise.all(
+        droppedFiles.map(async (filePath: string) => {
+          const fileName = filePath.split("/").pop() ?? "unknown";
+          const cachedFileName = await handleFileCache(filePath, fileName);
+          return cachedFileName;
+        })
+      );
+
+      setValue(name, [...files, ...updatedFiles], { shouldValidate: true });
+    });
+
+    return () => {
+      unlisten.then((fn) => fn());
+    };
+  }, [files, name, setValue]);
+
+  // Handle file removal
   const removeFile = (index: number) => {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
@@ -47,13 +93,31 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
       <FormControl>
         <div className="space-y-4">
           <div
-            {...getRootProps()}
             className={`border-2 items-center text-sm border-dashed rounded-lg py-2 px-8 text-center cursor-pointer transition-colors flex gap-2
-              ${isDragActive ? "border-primary bg-primary/10" : "border-muted-foreground/25 group hover:border-primary"}`}
+              ${isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25 group hover:border-primary"}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragging(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragging(false);
+            }}
           >
-            <input {...getInputProps()} />
+            <input
+              type="file"
+              multiple
+              accept={accept}
+              id={name}
+              onChange={handleFileSelect}
+              className="hidden"
+            />
             <UploadIcon className="mx-auto h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
-            {isDragActive ? (
+            {isDragging ? (
               <p className="text-primary line-clamp-1 w-full">
                 Legen Sie die <strong>Dateien</strong> hier ab ...
               </p>
@@ -64,9 +128,10 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
             )}
           </div>
 
+          {/* Display uploaded files */}
           {files.length > 0 && (
             <ul className="space-y-2">
-              {files.map((file: File, index: number) => (
+              {files.map((file: string, index: number) => (
                 <li
                   key={index}
                   className="flex items-center justify-between p-2 bg-muted rounded-md"
@@ -74,7 +139,7 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
                   <div className="flex items-center space-x-2">
                     <FileIcon className="h-5 w-5 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">
-                      {file.name}
+                      {file}
                     </span>
                   </div>
                   <Button
