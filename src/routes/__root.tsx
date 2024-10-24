@@ -2,6 +2,8 @@ import * as React from "react";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { Toaster } from "@/components/ui/toaster";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sections/AppSidebar";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -9,38 +11,14 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <>
-      <div className="p-2 flex gap-2 text-lg">
-        <Link
-          to="/"
-          activeProps={{
-            className: "font-bold",
-          }}
-          activeOptions={{ exact: true }}
-        >
-          Home
-        </Link>
-        <Link
-          to="/invoices"
-          activeProps={{
-            className: "font-bold",
-          }}
-        >
-          Invoices
-        </Link>
-        <Link
-          to="/contacts"
-          activeProps={{
-            className: "font-bold",
-          }}
-        >
-          Contacts
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
-      <Toaster />
-      <TanStackRouterDevtools position="bottom-right" />
-    </>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="w-full h-full">
+        <SidebarTrigger />
+        <Outlet />
+        <Toaster />
+        <TanStackRouterDevtools position="bottom-right" />
+      </main>
+    </SidebarProvider>
   );
 }
