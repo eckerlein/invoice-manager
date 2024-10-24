@@ -75,8 +75,10 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
       >
         <TextField name="id" label="Belegnummer" disabled={true} />
         <TextField name="name" label="Titel" />
-        <FormDatePicker label="Rechnungsdatum" name="documentDate" />
-        <FormDatePicker label="Erhalten am" name="receivedDate" />
+        <div className="grid grid-cols-2 gap-4">
+          <FormDatePicker label="Rechnungsdatum" name="documentDate" />
+          <FormDatePicker label="Erhalten am" name="receivedDate" />
+        </div>
 
         <TextField name="amount" label="Betrag" type="number" />
         <TextField name="contact" label="Kontakt" />
@@ -84,13 +86,3 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
     </Form>
   );
 });
-
-// export const incomingInvoiceSchema = z.object({
-// 	id: z.string(),
-// 	name: z.string(),
-// 	documentDate: z.date(),
-// 	amount: z.number(),
-// 	contact: z.string().optional(),
-// 	uploadedDocument: z.string(),
-// 	receivedDate: z.date(),
-// })
