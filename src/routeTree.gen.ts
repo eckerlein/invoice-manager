@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as InvoicesIndexImport } from './routes/invoices/index'
 import { Route as ContactsIndexImport } from './routes/contacts/index'
+import { Route as InvoicesCreateImport } from './routes/invoices/create'
 import { Route as ContactsCreateImport } from './routes/contacts/create'
 import { Route as ContactsContactIdImport } from './routes/contacts/$contactId'
 
@@ -34,6 +35,12 @@ const InvoicesIndexRoute = InvoicesIndexImport.update({
 const ContactsIndexRoute = ContactsIndexImport.update({
   id: '/contacts/',
   path: '/contacts/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const InvoicesCreateRoute = InvoicesCreateImport.update({
+  id: '/invoices/create',
+  path: '/invoices/create',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -74,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactsCreateImport
       parentRoute: typeof rootRoute
     }
+    '/invoices/create': {
+      id: '/invoices/create'
+      path: '/invoices/create'
+      fullPath: '/invoices/create'
+      preLoaderRoute: typeof InvoicesCreateImport
+      parentRoute: typeof rootRoute
+    }
     '/contacts/': {
       id: '/contacts/'
       path: '/contacts'
@@ -97,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
+  '/invoices/create': typeof InvoicesCreateRoute
   '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
@@ -105,6 +120,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
+  '/invoices/create': typeof InvoicesCreateRoute
   '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
@@ -114,6 +130,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
+  '/invoices/create': typeof InvoicesCreateRoute
   '/contacts/': typeof ContactsIndexRoute
   '/invoices/': typeof InvoicesIndexRoute
 }
@@ -124,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/contacts/$contactId'
     | '/contacts/create'
+    | '/invoices/create'
     | '/contacts'
     | '/invoices'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/contacts/$contactId'
     | '/contacts/create'
+    | '/invoices/create'
     | '/contacts'
     | '/invoices'
   id:
@@ -138,6 +157,7 @@ export interface FileRouteTypes {
     | '/'
     | '/contacts/$contactId'
     | '/contacts/create'
+    | '/invoices/create'
     | '/contacts/'
     | '/invoices/'
   fileRoutesById: FileRoutesById
@@ -147,6 +167,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContactsContactIdRoute: typeof ContactsContactIdRoute
   ContactsCreateRoute: typeof ContactsCreateRoute
+  InvoicesCreateRoute: typeof InvoicesCreateRoute
   ContactsIndexRoute: typeof ContactsIndexRoute
   InvoicesIndexRoute: typeof InvoicesIndexRoute
 }
@@ -155,6 +176,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactsContactIdRoute: ContactsContactIdRoute,
   ContactsCreateRoute: ContactsCreateRoute,
+  InvoicesCreateRoute: InvoicesCreateRoute,
   ContactsIndexRoute: ContactsIndexRoute,
   InvoicesIndexRoute: InvoicesIndexRoute,
 }
@@ -174,6 +196,7 @@ export const routeTree = rootRoute
         "/",
         "/contacts/$contactId",
         "/contacts/create",
+        "/invoices/create",
         "/contacts/",
         "/invoices/"
       ]
@@ -186,6 +209,9 @@ export const routeTree = rootRoute
     },
     "/contacts/create": {
       "filePath": "contacts/create.tsx"
+    },
+    "/invoices/create": {
+      "filePath": "invoices/create.tsx"
     },
     "/contacts/": {
       "filePath": "contacts/index.tsx"
