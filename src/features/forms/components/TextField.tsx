@@ -5,6 +5,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { assertUnreachable } from "@/lib/utils";
+
+type TextFieldType = "text" | "number" | "stringNumber";
 
 const TextField = ({
   name,
@@ -19,8 +22,25 @@ const TextField = ({
   placeholder?: string;
   className?: string;
   disabled?: boolean;
-  type?: "text" | "number";
+  type?: TextFieldType;
 }) => {
+  function parseValue(value: string, type?: TextFieldType) {
+    switch (type) {
+      case "number":
+        const cleanedString = value.replace(/[^0-9]/g, "");
+        if (cleanedString === "") return "";
+        const cleanedValue = Number(cleanedString);
+        return Number.isNaN(cleanedValue) ? "" : cleanedValue;
+      case "stringNumber":
+        return "" + value.replace(/[^0-9]/g, "");
+      case "text":
+      case undefined:
+        return value;
+      default:
+        assertUnreachable(type);
+    }
+  }
+
   return (
     <FormField
       name={name}
@@ -31,13 +51,8 @@ const TextField = ({
               <Input
                 label={label}
                 placeholder={placeholder ?? label}
-                type={type}
                 disabled={disabled}
-                onChange={(e) => {
-                  type === "number"
-                    ? onChange(Number(e.target.value))
-                    : onChange(e);
-                }}
+                onChange={(e) => onChange(parseValue(e.target.value, type))}
                 {...rest}
               />
             </FormControl>

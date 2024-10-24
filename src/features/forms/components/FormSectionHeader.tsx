@@ -21,9 +21,8 @@ export default function FormSectionHeader<TFieldValues extends FieldValues>({
       </Label>
       <Button
         type="button"
-        variant={"outline"}
+        variant={"destuctiveOutline"}
         aria-label="Remove section"
-        className="border-destructive text-destructive"
         onClick={() => {
           if (index === undefined) {
             form.reset({ ...form.getValues(), [name]: undefined });
