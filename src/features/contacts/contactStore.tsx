@@ -20,6 +20,10 @@ export default {
     return { id, ...data };
   },
 
+	delete: async (id: string) => {
+		await contactStore.delete(id);
+	},
+
   entries: async (): Promise<[string, Omit<Contact, "id">][]> => {
     return await contactStore.entries<Omit<Contact, "id">>();
   },
