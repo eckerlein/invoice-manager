@@ -3,25 +3,24 @@ import { Contact, contactSchema } from "./contactSchema";
 
 const contactStore = await load("store/contact.json");
 
-async function set(contact: Contact) {
-  const { error, data } = contactSchema.safeParse(contact);
-  if (error) return error;
-
-  const { id, ...rest } = data;
-  if (await contactStore.get(id))
-    return new Error("Contact with this ID already exists");
-
-  await contactStore.set(id, rest);
-}
-
-async function get(id: string): Promise<Contact | undefined> {
-  const data = await contactStore.get<Omit<Contact, "id">>(id);
-  if (!data) return;
-  return { id, ...data };
-}
-
 export default {
   store: contactStore,
-  set,
-  get,
+
+  set: async (contact: Contact) => {
+    const { error, data } = contactSchema.safeParse(contact);
+    if (error) return error;
+
+    const { id, ...rest } = data;
+    await contactStore.set(id, rest);
+  },
+
+  get: async (id: string): Promise<Contact | undefined> => {
+    const data = await contactStore.get<Omit<Contact, "id">>(id);
+    if (!data) return;
+    return { id, ...data };
+  },
+
+  entries: async (): Promise<[string, Omit<Contact, "id">][]> => {
+    return await contactStore.entries<Omit<Contact, "id">>();
+  },
 };
