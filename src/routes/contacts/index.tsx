@@ -17,21 +17,22 @@ import {
   getContactName,
 } from "@/features/contacts/contactUtils";
 import { Plus } from "lucide-react";
+import PageHeader from "@/components/sections/PageHeader";
 
 export const Route = createFileRoute("/contacts/")({
   component: () => (
-    <main className="relative w-full h-full py-2">
-      <header className="px-4">
-        <h1 className="text-xl">Kontakte</h1>
-      </header>
-      <nav className="absolute bottom-0 right-0 mx-4 my-2">
-        <Link
-          to="/contacts/create"
-          className={buttonVariants({ variant: "default" })}
-        >
-          <Plus />
-        </Link>
-      </nav>
+    <main className="relative w-full h-full">
+      <PageHeader
+        title={"Kontakte"}
+        actionBar={
+          <Link
+            to="/contacts/create"
+            className={buttonVariants({ variant: "default" })}
+          >
+            <Plus />
+          </Link>
+        }
+      />
       <Table>
         <TableHeader>
           <TableRow>
