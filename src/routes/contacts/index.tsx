@@ -12,7 +12,10 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import contactStore from "@/features/contacts/contactStore";
-import { getContactName } from "@/features/contacts/contactUtils";
+import {
+  getContactCities,
+  getContactName,
+} from "@/features/contacts/contactUtils";
 import { Plus } from "lucide-react";
 
 export const Route = createFileRoute("/contacts/")({
@@ -34,7 +37,7 @@ export const Route = createFileRoute("/contacts/")({
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Kundennummer</TableHead>
-            <TableHead>stadt</TableHead>
+            <TableHead>Stadt</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -83,12 +86,7 @@ function ContactRows() {
         >
           <TableCell>{getContactName(contact)}</TableCell>
           <TableCell>{id}</TableCell>
-          <TableCell>
-            {contact.address?.reduce(
-              (acc, address) => `${acc}, ${address.city}`,
-              ""
-            )}
-          </TableCell>
+          <TableCell>{getContactCities(contact)}</TableCell>
         </TableRow>
       ))}
     </>
