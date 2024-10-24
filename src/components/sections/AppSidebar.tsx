@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Link,
@@ -45,10 +46,13 @@ const items: Item[] = [
 
 export function AppSidebar() {
   const active = useRouterState().matches.at(-1)?.fullPath;
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarTrigger className="ml-auto" />
+        <SidebarTrigger
+          className={`ml-auto transition-all duration-300 ${open ? "w-10 h-10" : "mt-2"}`}
+        />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
