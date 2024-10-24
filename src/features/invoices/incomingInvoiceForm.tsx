@@ -15,6 +15,7 @@ import { incomingInvoiceSchema } from "./invoiceSchema";
 import { Form } from "@/components/ui/form";
 import DatePicker from "@/components/ui/datepicker";
 import FormDatePicker from "../forms/components/FormDatePicker";
+import { FileUploadField } from "@/components/ui/fileDrop";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<void>;
@@ -79,6 +80,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
           <FormDatePicker label="Rechnungsdatum" name="documentDate" />
           <FormDatePicker label="Erhalten am" name="receivedDate" />
         </div>
+        <FileUploadField name={"test"} />
 
         <TextField name="amount" label="Betrag" type="number" />
         <TextField name="contact" label="Kontakt" />

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -12,7 +12,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <fieldset
         className={cn(
-          "relative w-full rounded-md border border-input bg-background text-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+          "relative w-full rounded-md border transition-colors border-input bg-background text-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
           "focus-within:border-primary", // Change border color on focus
           !props.disabled && "hover:border-primary", // Change border color on hover
           className
