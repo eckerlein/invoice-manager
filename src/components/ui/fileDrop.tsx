@@ -11,7 +11,7 @@ import {
   FormField,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { UploadIcon, FileIcon, XIcon } from "lucide-react";
+import { UploadIcon, FileIcon, TrashIcon } from "lucide-react";
 import { ensureDirectoryExists } from "@/features/invoices/invoiceFileCache";
 import { Label } from "./label";
 import { TauriDragDropEvent } from "@/lib/utils/tauri/types";
@@ -141,8 +141,10 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
   const removeFile = (
     index: number,
     files: string[],
-    onChange: (value: string[]) => void
+    onChange: (value: string[]) => void,
+    event: React.MouseEvent
   ) => {
+    event.stopPropagation(); // Stop the event from propagating to the parent
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
     onChange(updatedFiles);
@@ -159,32 +161,37 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <FormControl>
-              <div className="space-y-4">
-                <div
-                  ref={dropZoneRef}
-                  className={`border-2 items-center text-sm border-dashed rounded-lg py-2 px-8 text-center cursor-pointer transition-colors flex gap-2
-                    ${isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25 group hover:border-primary"}`}
-                  onClick={() => handleFileSelect(onChange, files)}
-                >
-                  <UploadIcon className="mx-auto h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
-                  {isDragging ? (
-                    <p className="text-primary line-clamp-1 w-full">
-                      Legen Sie die <strong>Dateien</strong> hier ab ...
-                    </p>
-                  ) : (
-                    <p className="text-muted-foreground line-clamp-1 w-full">
-                      Hier klicken oder Dateien ablegen
-                    </p>
-                  )}
-                </div>
+              <div
+                ref={dropZoneRef}
+                className={`border-2 border-dotted items-center text-sm outline-border rounded-lg py-4 px-8 text-center cursor-pointer transition-colors flex flex-col gap-4
+                  ${isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25 group hover:border-primary"}`}
+                onClick={() => handleFileSelect(onChange, files)}
+              >
+                <UploadIcon className="mx-auto h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                {isDragging ? (
+                  <p className="text-primary line-clamp-1 w-full">
+                    Legen Sie die <strong>Dateien</strong> hier ab ...
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground line-clamp-1 w-full">
+                    Hier klicken oder Dateien ablegen
+                  </p>
+                )}
+
+                <Label htmlFor={name} className="text-sm text-muted-foreground">
+                  {files.length > 0
+                    ? `${files.length} Dateien ausgewählt`
+                    : "Keine Dateien ausgewählt"}
+                </Label>
 
                 {/* Display uploaded files */}
                 {files.length > 0 && (
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 w-full">
                     {files.map((file: string, index: number) => (
                       <li
                         key={index}
                         className="flex items-center justify-between p-2 bg-muted rounded-md"
+                        onClick={(e) => e.stopPropagation()} // Stop propagation when clicking inside the list
                       >
                         <div className="flex items-center space-x-2">
                           <FileIcon className="h-5 w-5 text-muted-foreground" />
@@ -194,35 +201,16 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
                         </div>
                         <Button
                           type="button"
-                          variant="ghost"
+                          variant="destuctiveGhost"
                           size="sm"
-                          onClick={() => removeFile(index, files, onChange)}
+                          onClick={(e) => removeFile(index, files, onChange, e)}
                         >
-                          <XIcon className="h-4 w-4 text-muted-foreground" />
+                          <TrashIcon />
                         </Button>
                       </li>
                     ))}
                   </ul>
                 )}
-
-                <div className="flex items-center gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => handleFileSelect(onChange, files)} // Trigger Tauri dialog
-                  >
-                    <UploadIcon className="mr-2 h-4 w-4" />
-                    Choose Files
-                  </Button>
-                  <Label
-                    htmlFor={name}
-                    className="text-sm text-muted-foreground"
-                  >
-                    {files.length > 0
-                      ? `${files.length} files selected`
-                      : "No files chosen"}
-                  </Label>
-                </div>
               </div>
             </FormControl>
             <FormMessage />
