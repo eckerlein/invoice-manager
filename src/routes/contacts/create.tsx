@@ -3,7 +3,6 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ContactForm, ContactFormRef } from "@/features/contacts/contactForm";
 import { Link } from "@tanstack/react-router";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
 import { useRef } from "react";
 
 export const Route = createFileRoute("/contacts/create")({
@@ -14,15 +13,16 @@ export const Route = createFileRoute("/contacts/create")({
     return (
       <main>
         <PageHeader
+          showBackButton={true}
           title="Kontakt erstellen"
           actionBar={
             <>
-              <Link
-                className={buttonVariants({ variant: "destuctiveOutline" })}
-                to="/contacts"
+              <Button
+                variant={"destuctiveOutline"}
+                onClick={() => window.history.back()}
               >
                 Abbrechen
-              </Link>
+              </Button>
               <Button
                 variant="default"
                 onClick={async () => {
