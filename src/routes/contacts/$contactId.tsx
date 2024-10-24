@@ -1,3 +1,4 @@
+import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/button";
 import { ContactForm, ContactFormRef } from "@/features/contacts/contactForm";
 import { Contact } from "@/features/contacts/contactSchema";
@@ -49,30 +50,35 @@ export const Route = createFileRoute("/contacts/$contactId")({
 
     return (
       <main className="h-full">
-        <header className="px-4 flex justify-between items-center sticky top-0 bg-background/50 backdrop-blur-sm py-2 border-b">
-          <h1 className="text-xl">
-            <span className="font-bold">{getContactName(data)}</span> anpassen:
-          </h1>
-          <nav className="flex gap-4 ">
-            <Button
-              variant="destuctiveOutline"
-              onClick={() => {
-                contactStore.delete(contactId);
-                navigate({ to: "/contacts" });
-              }}
-            >
-              Löschen
-            </Button>
-            <Button
-              variant="default"
-              onClick={() => {
-                formRef.current?.submit();
-              }}
-            >
-              Speichern
-            </Button>
-          </nav>
-        </header>
+        <PageHeader
+          title={
+            <>
+              <span className="font-bold">{getContactName(data)}</span>{" "}
+              anpassen:
+            </>
+          }
+          actionBar={
+            <>
+              <Button
+                variant="destuctiveOutline"
+                onClick={() => {
+                  contactStore.delete(contactId);
+                  navigate({ to: "/contacts" });
+                }}
+              >
+                Löschen
+              </Button>
+              <Button
+                variant="default"
+                onClick={() => {
+                  formRef.current?.submit();
+                }}
+              >
+                Speichern
+              </Button>
+            </>
+          }
+        />
         <ContactForm
           className="px-4 pt-4 pb-12"
           defaultValues={data}
