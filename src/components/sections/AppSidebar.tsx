@@ -45,7 +45,7 @@ const items: Item[] = [
 export function AppSidebar() {
   const active = useRouterState().matches.at(-1)?.fullPath;
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
