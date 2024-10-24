@@ -43,6 +43,10 @@ export const Route = createFileRoute("/contacts/$contactId")({
       return <div>{error.message}</div>;
     }
 
+    if (!data) {
+      return <div>Keine Daten gefunden</div>;
+    }
+
     return (
       <main className="h-full">
         <header className="px-4 flex justify-between items-center sticky top-0 bg-background/50 backdrop-blur-sm py-2 border-b">
