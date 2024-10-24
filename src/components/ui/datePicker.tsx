@@ -13,11 +13,22 @@ import {
 
 interface DatePickerProps {
   label?: string;
+  defaultValue?: Date;
+  onChange?: (date: Date | undefined) => void;
 }
 
-export default function DatePicker({ label = "test" }: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>();
+export default function DatePicker({
+  label,
+  defaultValue,
+  onChange: onChangeCallback,
+}: DatePickerProps) {
+  const [date, setDate] = React.useState<Date | undefined>(defaultValue);
   const [open, setOpen] = React.useState(false);
+
+  function onChange(date: Date | undefined) {
+    onChangeCallback?.(date);
+    setDate(date);
+  }
 
   return (
     <Popover
@@ -51,7 +62,7 @@ export default function DatePicker({ label = "test" }: DatePickerProps) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={onChange}
           initialFocus
         />
       </PopoverContent>
