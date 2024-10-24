@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useFormContext } from "react-hook-form";
 import { uid } from "uid";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
 import { BaseDirectory, copyFile } from "@tauri-apps/plugin-fs";
@@ -9,6 +8,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormField,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { UploadIcon, FileIcon, XIcon } from "lucide-react";
@@ -40,13 +40,14 @@ interface FileUploadFieldProps {
 }
 
 export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
-  const { setValue, watch } = useFormContext();
-  const files = watch(name) || [];
   const [isDragging, setIsDragging] = useState(false);
   const dropZoneRef = useRef<HTMLDivElement | null>(null);
 
   // Handle file selection via Tauri's file dialog
-  const handleFileSelect = async () => {
+  const handleFileSelect = async (
+    onChange: (value: string[]) => void,
+    files: string[]
+  ) => {
     const selectedFiles = await open({
       multiple: true,
       filters: accept
@@ -67,7 +68,7 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
           return cachedFileName;
         })
       );
-      setValue(name, [...files, ...updatedFiles], { shouldValidate: true });
+      onChange([...files, ...updatedFiles]);
     }
   };
 
@@ -84,116 +85,132 @@ export function FileUploadField({ name, label, accept }: FileUploadFieldProps) {
   };
 
   // Handle drag-and-drop event via Tauri's event listener
-  useEffect(() => {
-    const unlisten = listen(
-      TauriEvent.DRAG_DROP,
-      async (event: TauriDragDropEvent) => {
-        console.log(event);
-        const {
-          position: { x, y },
-          paths,
-        } = event.payload;
-        if (isCursorOverDropZone(x, y)) {
-          const updatedFiles = await Promise.all(
-            paths.map(async (filePath: string) => {
-              const fileName = filePath.split("/").pop() ?? "unknown";
-              const cachedFileName = await handleFileCache(filePath, fileName);
-              return cachedFileName;
-            })
-          );
-          setValue(name, [...files, ...updatedFiles], { shouldValidate: true });
+  const handleTauriDragDrop = (
+    onChange: (value: string[]) => void,
+    files: string[]
+  ) => {
+    useEffect(() => {
+      const unlisten = listen(
+        TauriEvent.DRAG_DROP,
+        async (event: TauriDragDropEvent) => {
+          const {
+            position: { x, y },
+            paths,
+          } = event.payload;
+          if (isCursorOverDropZone(x, y)) {
+            const updatedFiles = await Promise.all(
+              paths.map(async (filePath: string) => {
+                const fileName = filePath.split("/").pop() ?? "unknown";
+                const cachedFileName = await handleFileCache(
+                  filePath,
+                  fileName
+                );
+                return cachedFileName;
+              })
+            );
+            onChange([...files, ...updatedFiles]);
+          }
         }
-      }
-    );
+      );
 
-    return () => {
-      unlisten.then((fn) => fn());
-    };
-  }, [files, name, setValue]);
+      return () => {
+        unlisten.then((fn) => fn());
+      };
+    }, [files]);
+  };
 
   // Handle file removal
-  const removeFile = (index: number) => {
+  const removeFile = (
+    index: number,
+    files: string[],
+    onChange: (value: string[]) => void
+  ) => {
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
-    setValue(name, updatedFiles, { shouldValidate: true });
+    onChange(updatedFiles);
   };
 
   return (
-    <FormItem>
-      <FormLabel>{label}</FormLabel>
-      <FormControl>
-        <div className="space-y-4">
-          <div
-            ref={dropZoneRef}
-            className={`border-2 items-center text-sm border-dashed rounded-lg py-2 px-8 text-center cursor-pointer transition-colors flex gap-2
-              ${isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25 group hover:border-primary"}`}
-            onClick={handleFileSelect}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDragging(true);
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              setIsDragging(false);
-            }}
-          >
-            <UploadIcon className="mx-auto h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
-            {isDragging ? (
-              <p className="text-primary line-clamp-1 w-full">
-                Legen Sie die <strong>Dateien</strong> hier ab ...
-              </p>
-            ) : (
-              <p className="text-muted-foreground line-clamp-1 w-full">
-                Hier klicken oder Dateien ablegen
-              </p>
-            )}
-          </div>
+    <FormField
+      name={name}
+      render={({ field: { onChange, value: files = [] } }) => {
+        // Call Tauri drag-and-drop listener when the component renders
+        handleTauriDragDrop(onChange, files);
 
-          {/* Display uploaded files */}
-          {files.length > 0 && (
-            <ul className="space-y-2">
-              {files.map((file: string, index: number) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between p-2 bg-muted rounded-md"
+        return (
+          <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <FormControl>
+              <div className="space-y-4">
+                <div
+                  ref={dropZoneRef}
+                  className={`border-2 items-center text-sm border-dashed rounded-lg py-2 px-8 text-center cursor-pointer transition-colors flex gap-2
+                    ${isDragging ? "border-primary bg-primary/10" : "border-muted-foreground/25 group hover:border-primary"}`}
+                  onClick={() => handleFileSelect(onChange, files)}
                 >
-                  <div className="flex items-center space-x-2">
-                    <FileIcon className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
-                      {file}
-                    </span>
-                  </div>
+                  <UploadIcon className="mx-auto h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                  {isDragging ? (
+                    <p className="text-primary line-clamp-1 w-full">
+                      Legen Sie die <strong>Dateien</strong> hier ab ...
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground line-clamp-1 w-full">
+                      Hier klicken oder Dateien ablegen
+                    </p>
+                  )}
+                </div>
+
+                {/* Display uploaded files */}
+                {files.length > 0 && (
+                  <ul className="space-y-2">
+                    {files.map((file: string, index: number) => (
+                      <li
+                        key={index}
+                        className="flex items-center justify-between p-2 bg-muted rounded-md"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <FileIcon className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">
+                            {file}
+                          </span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFile(index, files, onChange)}
+                        >
+                          <XIcon className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <div className="flex items-center gap-4">
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeFile(index)}
+                    variant="outline"
+                    onClick={() => handleFileSelect(onChange, files)} // Trigger Tauri dialog
                   >
-                    <XIcon className="h-4 w-4 text-muted-foreground" />
+                    <UploadIcon className="mr-2 h-4 w-4" />
+                    Choose Files
                   </Button>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <div className="flex items-center gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleFileSelect} // Trigger Tauri dialog
-            >
-              <UploadIcon className="mr-2 h-4 w-4" />
-              Choose Files
-            </Button>
-            <Label htmlFor={name} className="text-sm text-muted-foreground">
-              {files.length > 0
-                ? `${files.length} files selected`
-                : "No files chosen"}
-            </Label>
-          </div>
-        </div>
-      </FormControl>
-      <FormMessage />
-    </FormItem>
+                  <Label
+                    htmlFor={name}
+                    className="text-sm text-muted-foreground"
+                  >
+                    {files.length > 0
+                      ? `${files.length} files selected`
+                      : "No files chosen"}
+                  </Label>
+                </div>
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
   );
 }
