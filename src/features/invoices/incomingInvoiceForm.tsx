@@ -16,10 +16,10 @@ import { Form } from "@/components/ui/form";
 import FormDatePicker from "../forms/components/FormDatePicker";
 import { FileUploadField } from "@/components/ui/fileDrop";
 import { Directories } from "@/lib/utils/tauri/diskUtils";
-import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore"; // Adjust path as necessary
+import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
 import { Button } from "@/components/ui/button";
 import FormComboBox from "../forms/components/FormComboBox";
-import contactStore from "../contacts/contactStore";
+import ContactStore from "../contacts/contactStore";
 import { ComboBoxOption } from "@/components/ui/ComboBox";
 
 export type IncomingInvoiceFormRef = {
@@ -80,7 +80,8 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
   const [contactOptions, setContactOptions] = useState<ComboBoxOption[]>([]);
   useEffect(() => {
     async function fetchContacts() {
-      const contacts = await contactStore.getContactOptions();
+      const store = await ContactStore.getInstance(); // Get the singleton instance
+      const contacts = await store.getContactOptions();
       setContactOptions(contacts);
     }
     fetchContacts();

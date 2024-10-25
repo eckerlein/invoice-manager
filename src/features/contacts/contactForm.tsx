@@ -1,3 +1,4 @@
+import React, { forwardRef, useImperativeHandle } from "react";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
@@ -22,9 +23,8 @@ import FormSectionAdder from "../forms/components/FormSectionAdder";
 import FormSectionArray from "../forms/components/FormSectionArray";
 import getDiscriminatedUnionValues from "@/lib/utils/zod/getDiscriminatedUnionValues";
 import FormSectionSingle from "../forms/components/FormSectionSingle";
-import contactStore from "./contactStore";
+import ContactStore from "./contactStore";
 import { twMerge } from "tailwind-merge";
-import React, { forwardRef, useImperativeHandle } from "react";
 
 export type ContactFormRef = {
   submit: () => Promise<void>;
@@ -55,24 +55,34 @@ export const ContactForm = forwardRef(function ContactForm(
     resolver: zodResolver(contactSchema),
     defaultValues,
   });
+
   async function onSubmit(data: z.infer<typeof contactSchema>) {
-    const err = await contactStore.set(data);
-    if (err) {
-      return toast({
+    try {
+      const store = await ContactStore.getInstance();
+      const err = await store.set(data);
+      if (err) {
+        return toast({
+          title: "Error",
+          description: err.message,
+          variant: "destructive",
+        });
+      }
+      toast({
+        title: `Kontakt ${formType === "create" ? "erstellt" : "aktualisiert"}`,
+      });
+    } catch (error) {
+      console.error("Error saving contact:", error);
+      toast({
         title: "Error",
-        description: err.message,
+        description: "Failed to save contact.",
         variant: "destructive",
       });
     }
-    toast({
-      title: `Kontakt ${formType === "create" ? "erstellt" : "aktualisiert"}`,
-    });
   }
 
   useImperativeHandle<ContactFormRef, any>(ref, () => ({
     submit: () => form.handleSubmit(onSubmit)(),
   }));
-
 
   return (
     <Form {...form}>

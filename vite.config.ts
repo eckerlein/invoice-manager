@@ -8,6 +8,9 @@ const host = process.env.TAURI_DEV_HOST;
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [TanStackRouterVite(), viteReact()],
+  esbuild: {
+    target: "node22",
+  },
 
   test: {
     environment: "jsdom", // Simulate a browser-like environment for testing

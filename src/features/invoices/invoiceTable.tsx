@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
 import { IncomingInvoice } from "@/features/invoices/invoiceSchema";
-import contactStore from "@/features/contacts/contactStore";
+import ContactStore from "@/features/contacts/contactStore"; // Update to import ContactStore singleton
 import { getContactName } from "@/features/contacts/contactUtils";
 
 type InvoiceTableProps = {
@@ -40,6 +40,9 @@ export default function InvoiceTable({
     async function fetchData() {
       try {
         const invoiceData = await incomingInvoiceStore.entries();
+
+        // Get the singleton instance of ContactStore and retrieve contact data
+        const contactStore = await ContactStore.getInstance();
         const contactPromises = invoiceData.map(async ([, invoice]) => {
           if (invoice.contact) {
             const contact = await contactStore.get(invoice.contact);

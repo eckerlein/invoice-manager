@@ -12,7 +12,7 @@ import {
 } from "@/features/contacts/contactUtils";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import contactStore from "@/features/contacts/contactStore";
+import ContactStore from "@/features/contacts/contactStore";
 import { Contact } from "@/features/contacts/contactSchema";
 
 type ContactTableProps = {
@@ -35,17 +35,20 @@ export default function ContactTable({
   const navigate = useNavigate();
 
   useEffect(() => {
-    contactStore
-      .entries()
-      .then((data) => {
+    async function fetchContacts() {
+      try {
+        const store = await ContactStore.getInstance();
+        const data = await store.entries();
         setContacts(data);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching contacts:", err);
-        setError(err);
+        setError(err as Error);
         setLoading(false);
-      });
+      }
+    }
+
+    fetchContacts();
   }, []);
 
   // Detect container width and adjust visible columns
