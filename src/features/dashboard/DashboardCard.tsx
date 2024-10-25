@@ -11,8 +11,8 @@ export type DashboardCardProps = {
 
 export function DashboardCard({ title, link, children }: DashboardCardProps) {
   return (
-    <div className="relative w-full aspect-square bg-card rounded-lg border-border border overflow-hidden">
-      <div className="flex flex-col">
+    <div className="relative w-full aspect-square bg-card rounded-lg border border-border overflow-hidden">
+      <div className="flex flex-col h-full">
         <PageHeader
           title={title}
           size="md"
@@ -25,7 +25,11 @@ export function DashboardCard({ title, link, children }: DashboardCardProps) {
             </Link>
           }
         />
-        <div className="overflow-x-hidden overflow-y-scroll">{children}</div>
+        {/* Scroll container for the content */}
+        <div className="flex-1 p-2 overflow-y-auto overflow-x-hidden min-w-0">
+          <div className="w-full">{children}</div>{" "}
+          {/* Ensure children don't exceed container width */}
+        </div>
       </div>
     </div>
   );
