@@ -26,13 +26,13 @@ export default function FormComboBox({
       name={name}
       render={({ field: { onChange, value } }) => (
         <FormItem className={className}>
-          {label && <label>{label}</label>}
           <FormControl>
             <ComboBox
               options={options}
               placeholder={placeholder}
               onSelect={(val) => onChange(val)}
-              value={value}
+              value={value as string}
+              label={label}
             />
           </FormControl>
           <FormMessage />
