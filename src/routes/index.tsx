@@ -1,14 +1,25 @@
-import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import PageHeader from "@/components/sections/PageHeader";
+import InvoiceTable from "@/features/invoices/invoiceTable";
+import ContactTable from "@/features/contacts/contactTable";
+import { DashboardCard } from "@/features/dashboard/DashboardCard";
 
 export const Route = createFileRoute("/")({
-  component: HomeComponent,
-});
+  component: () => {
+    return (
+      <main className="relative w-full h-full">
+        <PageHeader title="Dashboard" size="lg" />
 
-function HomeComponent() {
-  return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
-  );
-}
+        <div className="grid grid-cols-2 gap-4 p-4">
+          <DashboardCard title="Rechnungen" link="/invoices/create">
+            <InvoiceTable />
+          </DashboardCard>
+
+          <DashboardCard title="Kontakte" link="/contacts/create">
+            <ContactTable />
+          </DashboardCard>
+        </div>
+      </main>
+    );
+  },
+});
