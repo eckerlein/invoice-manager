@@ -4,7 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import { uid } from "uid";
 import TextField from "../forms/components/TextField";
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { twMerge } from "tailwind-merge";
 import { incomingInvoiceSchema } from "./invoiceSchema";
 import { Form } from "@/components/ui/form";
@@ -13,6 +18,9 @@ import { FileUploadField } from "@/components/ui/fileDrop";
 import { Directories } from "@/lib/utils/tauri/diskUtils";
 import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore"; // Adjust path as necessary
 import { Button } from "@/components/ui/button";
+import FormComboBox from "../forms/components/FormComboBox";
+import contactStore from "../contacts/contactStore";
+import { ComboBoxOption } from "@/components/ui/ComboBox";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<void>;
@@ -69,6 +77,15 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
     }
   }
 
+  const [contactOptions, setContactOptions] = useState<ComboBoxOption[]>([]);
+  useEffect(() => {
+    async function fetchContacts() {
+      const contacts = await contactStore.getContactOptions();
+      setContactOptions(contacts);
+    }
+    fetchContacts();
+  }, []);
+
   useImperativeHandle<IncomingInvoiceFormRef, any>(ref, () => ({
     submit: () => form.handleSubmit(onSubmit, (e) => console.error(e))(),
   }));
@@ -86,7 +103,13 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
           <FormDatePicker label="Erhalten am" name="receivedDate" />
         </div>
         <TextField name="amount" label="Betrag" type="number" />
-        <TextField name="contact" label="Kontakt" />
+        <FormComboBox
+          name="contact"
+          label="Kontakt"
+          options={contactOptions}
+          placeholder="Select contact..."
+        />
+
         <FileUploadField
           name="uploadedDocuments"
           nestedPath={[Directories.INVOICES_DIR, form.getValues("id")]}
