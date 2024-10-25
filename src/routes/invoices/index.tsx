@@ -75,9 +75,9 @@ function InvoiceRows() {
       {invoices?.map(([id, invoice], index) => (
         <TableRow
           key={index}
-          // onClick={() =>
-          //   navigate({ to: "/invoices/$invoiceId", params: { invoiceId: id } })
-          // }
+          onClick={() =>
+            navigate({ to: "/invoices/$invoiceId", params: { invoiceId: id } })
+          }
           className="cursor-pointer hover:bg-secondary transition-colors duration-100 ease-in-out"
           role="button"
           tabIndex={0}
