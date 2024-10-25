@@ -1,5 +1,4 @@
 import { z } from "zod";
-
 import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
@@ -12,6 +11,8 @@ import { Form } from "@/components/ui/form";
 import FormDatePicker from "../forms/components/FormDatePicker";
 import { FileUploadField } from "@/components/ui/fileDrop";
 import { Directories } from "@/lib/utils/tauri/diskUtils";
+import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore"; // Adjust path as necessary
+import { Button } from "@/components/ui/button";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<void>;
@@ -19,7 +20,7 @@ export type IncomingInvoiceFormRef = {
 
 type IncomingInvoiceFormProps = {
   defaultValues?: DefaultValues<z.infer<typeof incomingInvoiceSchema>>;
-  formType?: "create" | "update";
+  formType: "create" | "update";
   showButton?: boolean;
   className?: string;
   invoiceId?: string;
@@ -45,21 +46,27 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
   });
 
   async function onSubmit(data: z.infer<typeof incomingInvoiceSchema>) {
-    // const err = await contactStore.set(data);
-    // if (err) {
-    // 	toast.error(err.message);
-    // } else {
-    // 	toast.success("Kontakt erfolgreich gespeichert");
-    // }
-    console.log(data);
-    toast({
-      title: "Invoice saved",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    try {
+      const error = await incomingInvoiceStore.set(data); // Save to the store
+      if (error) {
+        return toast({
+          title: "Fehler",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+
+      toast({
+        title: `Rechnung ${formType === "create" ? "erstellt" : "aktualisiert"}`,
+      });
+    } catch (error) {
+      console.error("Error saving invoice:", error);
+      toast({
+        title: "Fehler",
+        description: "Das Speichern der Rechnung ist fehlgeschlagen.",
+        variant: "destructive",
+      });
+    }
   }
 
   useImperativeHandle<IncomingInvoiceFormRef, any>(ref, () => ({
@@ -84,6 +91,11 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
           name="uploadedDocuments"
           nestedPath={[Directories.INVOICES_DIR, form.getValues("id")]}
         />
+        {showButton && (
+          <Button className="" type="submit">
+            Speichern
+          </Button>
+        )}
       </form>
     </Form>
   );

@@ -32,6 +32,7 @@ export const Route = createFileRoute("/invoices/create")({
           }
         />
         <IncomingInvoiceForm
+          formType="create"
           className="px-4 pt-4 pb-12"
           ref={formRef}
           showButton={false}
