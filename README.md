@@ -4,6 +4,16 @@
 
 This project is an Invoice Manager built with Tauri, React, and Typescript using Vite as a build tool. It provides a desktop application to manage invoices, leveraging the power of Tauri for native system interactions and React for building a dynamic user interface.
 
+<p float="left">
+  <img src="readmeImages/dashboard.png" alt="Dashboard" width="48%" />
+  <img src="readmeImages/contactEdit.png" alt="Contact Edit" width="48%" />
+</p>
+
+<p float="left">
+  <img src="readmeImages/invoiceEdit.png" alt="Invoice Edit" width="48%" />
+  <img src="readmeImages/invoiceList.png" alt="Invoice Edit" width="48%" />
+</p>
+
 ## ✨ Key Technologies
 
 - Tauri: Cross-platform application framework using web technologies.
