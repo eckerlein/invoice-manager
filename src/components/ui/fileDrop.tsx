@@ -45,7 +45,7 @@ async function handleFileStore(
 
 interface FileUploadFieldProps {
   name: string;
-  label: string;
+  label?: string;
   accept?: string;
   nestedPath: NestedPath;
 }
@@ -180,7 +180,7 @@ export function FileUploadField({
 
         return (
           <FormItem>
-            <FormLabel>{label}</FormLabel>
+            {label && <FormLabel>{label}</FormLabel>}
             <FormControl>
               <div
                 ref={dropZoneRef}
