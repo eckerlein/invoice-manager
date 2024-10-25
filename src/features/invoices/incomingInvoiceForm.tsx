@@ -11,6 +11,7 @@ import { incomingInvoiceSchema } from "./invoiceSchema";
 import { Form } from "@/components/ui/form";
 import FormDatePicker from "../forms/components/FormDatePicker";
 import { FileUploadField } from "@/components/ui/fileDrop";
+import { Directories } from "@/lib/utils/tauri/diskUtils";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<void>;
@@ -80,7 +81,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
         <FileUploadField
           name="uploadedDocuments"
           label="Test"
-          id={form.getValues("id")}
+          nestedPath={[Directories.INVOICES_DIR, form.getValues("id")]}
         />
 
         <TextField name="amount" label="Betrag" type="number" />
