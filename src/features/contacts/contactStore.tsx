@@ -3,8 +3,9 @@ import { Contact, contactSchema } from "./contactSchema";
 import { getContactName } from "./contactUtils";
 
 class ContactStore {
-  private static instance: ContactStore;
+  private static instance: ContactStore | null = null;
   private store: Awaited<ReturnType<typeof load>> | undefined;
+  private static isInitialized = false;
 
   private constructor() {}
 
@@ -12,45 +13,45 @@ class ContactStore {
     if (!ContactStore.instance) {
       ContactStore.instance = new ContactStore();
       await ContactStore.instance.initializeStore();
+      ContactStore.isInitialized = true;
     }
     return ContactStore.instance;
   }
 
   private async initializeStore() {
-    this.store = await load("store/contact.json");
+    if (!ContactStore.isInitialized) {
+      this.store = await load("store/contact.json");
+    }
   }
 
-  // Ensure store is initialized before usage
-  private ensureStoreInitialized() {
+  private async ensureStoreInitialized() {
     if (!this.store) {
-      throw new Error(
-        "Store is not initialized. Make sure to call getInstance()."
-      );
+      await this.initializeStore();
     }
   }
 
   public async set(contact: Contact) {
-    this.ensureStoreInitialized(); // Check if store is initialized
+    await this.ensureStoreInitialized();
     const { error, data } = contactSchema.safeParse(contact);
     if (error) return error;
     const { id, ...rest } = data;
-    await this.store!.set(id, rest); // Non-null assertion, since we know it's initialized
+    await this.store!.set(id, rest);
   }
 
   public async get(id: string): Promise<Contact | undefined> {
-    this.ensureStoreInitialized();
+    await this.ensureStoreInitialized();
     const data = await this.store!.get<Omit<Contact, "id">>(id);
     if (!data) return;
     return { id, ...data };
   }
 
   public async delete(id: string) {
-    this.ensureStoreInitialized();
+    await this.ensureStoreInitialized();
     await this.store!.delete(id);
   }
 
   public async entries(): Promise<[string, Omit<Contact, "id">][]> {
-    this.ensureStoreInitialized();
+    await this.ensureStoreInitialized();
     return await this.store!.entries<Omit<Contact, "id">>();
   }
 
