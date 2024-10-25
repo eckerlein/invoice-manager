@@ -10,10 +10,7 @@ export const Route = createFileRoute("/invoices/")({
       <PageHeader
         title={"Belege"}
         actionBar={
-          <Link
-            to="/invoices/create"
-            className={buttonVariants({ variant: "default" })}
-          >
+          <Link to="/invoices/create" className={buttonVariants()}>
             <Plus />
           </Link>
         }
