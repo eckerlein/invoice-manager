@@ -1,5 +1,3 @@
-// Update incommingInvoiceStore.ts or similar store file
-
 import { load } from "@tauri-apps/plugin-store";
 import { IncomingInvoice, incomingInvoiceSchema } from "./invoiceSchema";
 
