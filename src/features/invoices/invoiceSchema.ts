@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+export type OrderItem = z.infer<typeof orderItemSchema>;
 export const orderItemSchema = z.object({
   description: z.string(),
   unit: z.string(),
@@ -7,6 +8,7 @@ export const orderItemSchema = z.object({
   price: z.number(),
 });
 
+export type OutgoingInvoice = z.infer<typeof outgoingInvoiceSchema>;
 export const outgoingInvoiceSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -19,6 +21,7 @@ export const outgoingInvoiceSchema = z.object({
   deleteDate: z.date().optional(),
 });
 
+export type IncomingInvoice = z.infer<typeof incomingInvoiceSchema>;
 export const incomingInvoiceSchema = z.object({
   id: z.string(),
   name: z.string(),
