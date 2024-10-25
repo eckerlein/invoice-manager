@@ -78,7 +78,7 @@ export default function ContactTable({
   }, [loading, contacts]); // Add 'contacts' and 'loading' as dependencies
 
   if (error) return <div>Error: {error.message}</div>;
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div></div>;
 
   return (
     <div ref={containerRef} className="w-full">

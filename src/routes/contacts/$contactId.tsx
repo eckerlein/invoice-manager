@@ -2,7 +2,7 @@ import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/button";
 import { ContactForm, ContactFormRef } from "@/features/contacts/contactForm";
 import { Contact } from "@/features/contacts/contactSchema";
-import contactStore from "@/features/contacts/contactStore";
+import ContactStore from "@/features/contacts/contactStore"; // Import singleton pattern store
 import { getContactName } from "@/features/contacts/contactUtils";
 import {
   createFileRoute,
@@ -23,17 +23,20 @@ export const Route = createFileRoute("/contacts/$contactId")({
     const formRef = useRef<ContactFormRef>(null);
 
     useEffect(() => {
-      contactStore
-        .get(contactId)
-        .then((data) => {
-          setData(data);
+      async function fetchContactData() {
+        try {
+          const contactStore = await ContactStore.getInstance();
+          const contactData = await contactStore.get(contactId);
+          setData(contactData);
           setLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setError(err);
+        } catch (err) {
+          console.error("Error fetching contact data:", err);
+          setError(err as Error);
           setLoading(false);
-        });
+        }
+      }
+
+      fetchContactData();
     }, [contactId]);
 
     if (loading) {
@@ -62,8 +65,9 @@ export const Route = createFileRoute("/contacts/$contactId")({
             <>
               <Button
                 variant="destuctiveOutline"
-                onClick={() => {
-                  contactStore.delete(contactId);
+                onClick={async () => {
+                  const contactStore = await ContactStore.getInstance();
+                  await contactStore.delete(contactId);
                   navigate({ to: "/contacts" });
                 }}
               >

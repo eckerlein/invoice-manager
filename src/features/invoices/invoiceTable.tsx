@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
 import { IncomingInvoice } from "@/features/invoices/invoiceSchema";
 import ContactStore from "@/features/contacts/contactStore"; // Update to import ContactStore singleton
 import { getContactName } from "@/features/contacts/contactUtils";
+import IncomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
 
 type InvoiceTableProps = {
   onRowClick?: (invoiceId: string) => void;
@@ -39,7 +39,8 @@ export default function InvoiceTable({
   useEffect(() => {
     async function fetchData() {
       try {
-        const invoiceData = await incomingInvoiceStore.entries();
+        const invoiceStore = await IncomingInvoiceStore.getInstance();
+        const invoiceData = await invoiceStore.entries();
 
         // Get the singleton instance of ContactStore and retrieve contact data
         const contactStore = await ContactStore.getInstance();
@@ -96,7 +97,7 @@ export default function InvoiceTable({
   }, [loading, invoices]);
 
   if (error) return <div>Error: {error.message}</div>;
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div></div>;
 
   return (
     <div ref={containerRef} className="w-full">

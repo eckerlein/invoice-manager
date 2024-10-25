@@ -5,7 +5,7 @@ import {
   IncomingInvoiceFormRef,
 } from "@/features/invoices/incomingInvoiceForm";
 import { IncomingInvoice } from "@/features/invoices/invoiceSchema";
-import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
+import IncomingInvoiceStore from "@/features/invoices/incomingInvoiceStore"; // Update to use the singleton
 import {
   createFileRoute,
   useNavigate,
@@ -24,21 +24,24 @@ export const Route = createFileRoute("/invoices/$invoiceId")({
     const formRef = useRef<IncomingInvoiceFormRef>(null);
 
     useEffect(() => {
-      incomingInvoiceStore
-        .get(invoiceId)
-        .then((data) => {
-          setData(data);
+      async function fetchInvoiceData() {
+        try {
+          const invoiceStore = await IncomingInvoiceStore.getInstance();
+          const invoiceData = await invoiceStore.get(invoiceId);
+          setData(invoiceData);
           setLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setError(err);
+        } catch (err) {
+          console.error("Error fetching invoice data:", err);
+          setError(err as Error);
           setLoading(false);
-        });
+        }
+      }
+
+      fetchInvoiceData();
     }, [invoiceId]);
 
     if (loading) {
-      return <div>Loading...</div>;
+      return <div></div>;
     }
 
     if (error) {
@@ -62,8 +65,9 @@ export const Route = createFileRoute("/invoices/$invoiceId")({
             <>
               <Button
                 variant="destuctiveOutline"
-                onClick={() => {
-                  incomingInvoiceStore.delete(invoiceId);
+                onClick={async () => {
+                  const invoiceStore = await IncomingInvoiceStore.getInstance();
+                  await invoiceStore.delete(invoiceId);
                   navigate({ to: "/invoices" });
                 }}
               >

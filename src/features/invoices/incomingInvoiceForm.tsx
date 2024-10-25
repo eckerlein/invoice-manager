@@ -16,11 +16,11 @@ import { Form } from "@/components/ui/form";
 import FormDatePicker from "../forms/components/FormDatePicker";
 import { FileUploadField } from "@/components/ui/fileDrop";
 import { Directories } from "@/lib/utils/tauri/diskUtils";
-import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
 import { Button } from "@/components/ui/button";
 import FormComboBox from "../forms/components/FormComboBox";
 import ContactStore from "../contacts/contactStore";
 import { ComboBoxOption } from "@/components/ui/ComboBox";
+import IncomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<void>;
@@ -55,7 +55,8 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
 
   async function onSubmit(data: z.infer<typeof incomingInvoiceSchema>) {
     try {
-      const error = await incomingInvoiceStore.set(data); // Save to the store
+      const invoiceStore = await IncomingInvoiceStore.getInstance();
+      const error = await invoiceStore.set(data);
       if (error) {
         return toast({
           title: "Fehler",
