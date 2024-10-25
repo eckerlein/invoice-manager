@@ -19,6 +19,7 @@ import {
 export type ComboBoxOption = { value: string; label: string };
 
 type ComboBoxProps = {
+  label?: string;
   options: ComboBoxOption[];
   placeholder?: string;
   onSelect: (value: string) => void;
@@ -26,6 +27,7 @@ type ComboBoxProps = {
 };
 
 export function ComboBox({
+  label,
   options,
   placeholder = "Select an option...",
   onSelect,
@@ -36,18 +38,36 @@ export function ComboBox({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open}>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={cn(
+            "w-full justify-between text-left font-normal",
+            !value && "text-muted-foreground",
+            "relative", // Ensure correct position for the label
+            "hover:bg-background ring-offset-background ring-offset-2 ring-primary",
+            "border-border hover:border-primary",
+            open && "ring-2",
+            "py-6"
+          )}
+        >
+          {label && (
+            <span className="absolute text-xs font-medium -top-2.5 left-2 px-1 bg-background text-muted-foreground">
+              {label}
+            </span>
+          )}
           {value
             ? options.find((opt) => opt.value === value)?.label
             : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Search..." />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>No options found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem
