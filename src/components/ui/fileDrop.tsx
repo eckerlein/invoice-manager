@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
-import { BaseDirectory, copyFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, copyFile, remove } from "@tauri-apps/plugin-fs";
 import { open } from "@tauri-apps/plugin-dialog";
 import {
   FormItem,
@@ -158,14 +158,32 @@ export function FileUploadField({
     }, [files, onChange]);
   };
 
-  // Handle file removal
-  const removeFile = (
+  const removeFile = async (
     index: number,
     files: string[],
     onChange: (value: string[]) => void,
+    nestedPath: NestedPath,
     event: React.MouseEvent
   ) => {
-    event.stopPropagation(); // Stop the event from propagating to the parent
+    event.stopPropagation(); // Stop event propagation to the parent
+
+    // Get the file name to remove from disk
+    const fileName = files[index];
+
+    // Construct the full path to the file
+    const dirPath = await ensureNestedDirectoryExists(nestedPath);
+    if (dirPath) {
+      const filePath = [dirPath, fileName].join(sep());
+
+      // Attempt to remove the file from disk
+      try {
+        await remove(filePath, { baseDir: BaseDirectory.AppData });
+      } catch (err) {
+        console.error(`Failed to delete file ${fileName} from disk:`, err);
+      }
+    }
+
+    // Remove the file from the list and update the form state
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
     onChange(updatedFiles);
@@ -224,7 +242,9 @@ export function FileUploadField({
                           type="button"
                           variant="destuctiveGhost"
                           size="sm"
-                          onClick={(e) => removeFile(index, files, onChange, e)}
+                          onClick={(e) =>
+                            removeFile(index, files, onChange, nestedPath, e)
+                          }
                         >
                           <TrashIcon />
                         </Button>
