@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { uid } from "uid";
 import { TauriEvent, listen } from "@tauri-apps/api/event";
 import { BaseDirectory, copyFile } from "@tauri-apps/plugin-fs";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -14,23 +13,31 @@ import { Button } from "@/components/ui/button";
 import { UploadIcon, FileIcon, TrashIcon } from "lucide-react";
 import { Label } from "./label";
 import { TauriDragDropEvent } from "@/lib/utils/tauri/types";
-import { ensureNestedDirectoryExists } from "@/lib/utils/tauri/diskUtils";
+import {
+  NestedPath,
+  ensureNestedDirectoryExists,
+} from "@/lib/utils/tauri/diskUtils";
 import { sep } from "@tauri-apps/api/path";
 
 // Utility function to copy dropped files into a cache directory
-async function handleFileCache(
+async function handleFileStore(
   filePath: string,
   fileName: string,
-  id: string = uid()
+  nestedPath: NestedPath
 ): Promise<string> {
-  const path = ["fileUploadCache", id, fileName] as const;
-  const cachedFilePath = path.join(sep());
+  const path = await ensureNestedDirectoryExists(nestedPath);
+  if (!path) throw new Error("Failed to create directory");
+  console.log({ path, filePath, fileName, nestedPath });
 
-  await ensureNestedDirectoryExists(path[0], path[1]);
+  const toPath = [path, fileName].join(sep());
 
-  await copyFile(filePath, cachedFilePath, {
+  await copyFile(filePath, toPath, {
     fromPathBaseDir: BaseDirectory.AppData,
     toPathBaseDir: BaseDirectory.AppData,
+  }).catch((err) => {
+    throw new Error(
+      `Failed to copy file ${fileName} to cache directory: ${err}`
+    );
   });
 
   return fileName; // Return the new unique file name
@@ -40,14 +47,14 @@ interface FileUploadFieldProps {
   name: string;
   label: string;
   accept?: string;
-  id: string;
+  nestedPath: NestedPath;
 }
 
 export function FileUploadField({
   name,
   label,
   accept,
-  id,
+  nestedPath,
 }: FileUploadFieldProps) {
   const [isDragging, setIsDragging] = useState(false);
   const dropZoneRef = useRef<HTMLDivElement | null>(null);
@@ -73,7 +80,11 @@ export function FileUploadField({
       const updatedFiles = await Promise.all(
         selectedFiles.map(async (filePath) => {
           const fileName = filePath.split("/").pop() ?? "unknown";
-          const cachedFileName = await handleFileCache(filePath, fileName, id);
+          const cachedFileName = await handleFileStore(
+            filePath,
+            fileName,
+            nestedPath
+          );
           return cachedFileName;
         })
       );
@@ -112,10 +123,10 @@ export function FileUploadField({
             const updatedFiles = await Promise.all(
               paths.map(async (filePath: string) => {
                 const fileName = filePath.split("/").pop() ?? "unknown";
-                const cachedFileName = await handleFileCache(
+                const cachedFileName = await handleFileStore(
                   filePath,
                   fileName,
-                  id
+                  nestedPath
                 );
                 return cachedFileName;
               })
