@@ -16,7 +16,9 @@ function RootComponent() {
       <main className="w-full">
         <Outlet />
         <Toaster />
-        <TanStackRouterDevtools position="bottom-left" />
+        {import.meta.env.DEV && (
+          <TanStackRouterDevtools position="bottom-left" />
+        )}
       </main>
     </SidebarProvider>
   );
