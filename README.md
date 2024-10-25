@@ -6,15 +6,15 @@ This project is an Invoice Manager built with Tauri, React, and Typescript using
 
 ## ✨ Key Technologies
 
-    •	Tauri: Cross-platform application framework using web technologies.
-    •	React: Frontend library for building user interfaces.
-    •	Typescript: Strictly typed superset of JavaScript.
-    •	Vite: Fast development build tool.
-    •	TailwindCSS: Utility-first CSS framework for styling.
+- Tauri: Cross-platform application framework using web technologies.
+- React: Frontend library for building user interfaces.
+- Typescript: Strictly typed superset of JavaScript.
+- Vite: Fast development build tool.
+- TailwindCSS: Utility-first CSS framework for styling.
 
 ## 📂 Project Structure
 
-```
+```bash
 .
 ├── public/ # Static assets
 ├── src/
