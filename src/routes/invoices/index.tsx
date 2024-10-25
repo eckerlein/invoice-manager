@@ -14,6 +14,9 @@ import PageHeader from "@/components/sections/PageHeader";
 import incomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
 import { IncomingInvoice } from "@/features/invoices/invoiceSchema";
 
+import contactStore from "@/features/contacts/contactStore"; // Import the contact store
+import { getContactName } from "@/features/contacts/contactUtils"; // Import the utility to get the contact name
+
 export const Route = createFileRoute("/invoices/")({
   component: () => (
     <main className="relative w-full h-full">
@@ -33,6 +36,7 @@ export const Route = createFileRoute("/invoices/")({
           <TableRow>
             <TableHead>Belegnummer</TableHead>
             <TableHead>Name</TableHead>
+            <TableHead>Kontakt</TableHead>
             <TableHead>Summe</TableHead>
             <TableHead>Dokumentanzahl</TableHead>
           </TableRow>
@@ -49,22 +53,39 @@ export const Route = createFileRoute("/invoices/")({
 function InvoiceRows() {
   const [invoices, setInvoices] =
     useState<[string, Omit<IncomingInvoice, "id">][]>();
+  const [contactNames, setContactNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    incomingInvoiceStore
-      .entries()
-      .then((data) => {
-        setInvoices(data);
+    async function fetchData() {
+      try {
+        const invoiceData = await incomingInvoiceStore.entries();
+        const contactPromises = invoiceData.map(async ([id, invoice]) => {
+          if (invoice.contact) {
+            const contact = await contactStore.get(invoice.contact);
+            if (contact) {
+              return { [invoice.contact]: getContactName(contact) };
+            }
+          }
+          return {};
+        });
+
+        const contactNameResults = await Promise.all(contactPromises);
+        const mergedContactNames = Object.assign({}, ...contactNameResults);
+
+        setInvoices(invoiceData);
+        setContactNames(mergedContactNames);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
-        setError(err);
+        setError(err as Error);
         setLoading(false);
-      });
+      }
+    }
+
+    fetchData();
   }, []);
 
   if (error) return <div>Error: {error.message}</div>;
@@ -85,6 +106,11 @@ function InvoiceRows() {
         >
           <TableCell>{id}</TableCell>
           <TableCell>{invoice.name}</TableCell>
+          <TableCell>
+            {invoice.contact
+              ? (contactNames[invoice.contact] ?? "Unknown")
+              : "No Contact"}
+          </TableCell>
           <TableCell>{invoice.amount.toFixed(2)} €</TableCell>
           <TableCell>{invoice.uploadedDocuments.length}</TableCell>
         </TableRow>
