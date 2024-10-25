@@ -7,9 +7,9 @@ const pageHeaderVariants = cva(
   {
     variants: {
       size: {
-        sm: "py-1 text-sm", // Small: smaller padding and font size
-        md: "py-2 text-base", // Medium: slightly smaller padding and font size
-        lg: "py-2 text-xl", // Large: original size, same as before
+        sm: "py-1 h-10 text-sm", // Small: smaller padding and font size
+        md: "py-1 h-12 text-base", // Medium: slightly smaller padding and font size
+        lg: "py-2 h-16 text-xl", // Large: original size, same as before
       },
     },
     defaultVariants: {
