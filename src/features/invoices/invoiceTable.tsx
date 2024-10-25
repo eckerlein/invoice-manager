@@ -35,6 +35,7 @@ export default function InvoiceTable({
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  // Fetch data
   useEffect(() => {
     async function fetchData() {
       try {
@@ -71,15 +72,17 @@ export default function InvoiceTable({
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth;
         setVisibleColumns({
-          showContact: width >= 400, // Show contact if container is at least 600px wide
-          showBelegnummer: width >= 500, // Show Belegnummer if container is at least 800px wide
-          showDokumentanzahl: width >= 600, // Show Dokumentanzahl if container is at least 1000px wide
+          showContact: width >= 400, // Show contact if container is at least 400px wide
+          showBelegnummer: width >= 500, // Show Belegnummer if container is at least 500px wide
+          showDokumentanzahl: width >= 600, // Show Dokumentanzahl if container is at least 600px wide
         });
       }
     }
 
-    // Initial check
-    handleResize();
+    // Run resize logic after the data is fetched
+    if (!loading) {
+      handleResize();
+    }
 
     // Add a resize listener
     window.addEventListener("resize", handleResize);
@@ -87,7 +90,7 @@ export default function InvoiceTable({
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [loading, invoices]);
 
   if (error) return <div>Error: {error.message}</div>;
   if (loading) return <div>Loading...</div>;

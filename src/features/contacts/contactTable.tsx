@@ -54,22 +54,25 @@ export default function ContactTable({
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth;
         setVisibleColumns({
-          showCustomerNumber: width >= 400, // Show customer number if container is at least 400px wide
-          showCity: width >= 500, // Show city if container is at least 600px wide
+          showCustomerNumber: width >= 400,
+          showCity: width >= 600,
         });
       }
     }
 
-    // Initial check
-    handleResize();
+    // Trigger the resize logic initially and after data is fetched
+    if (!loading) {
+      handleResize(); // Trigger after data fetch
+    }
 
-    // Add a resize listener
+    // Add the resize event listener
     window.addEventListener("resize", handleResize);
 
+    // Cleanup the event listener when the component is unmounted
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [loading, contacts]); // Add 'contacts' and 'loading' as dependencies
 
   if (error) return <div>Error: {error.message}</div>;
   if (loading) return <div>Loading...</div>;
