@@ -1,6 +1,7 @@
+import { toast } from "@/hooks/use-toast";
 import { UseFormReturn, FieldValues } from "react-hook-form";
 
-export function formSubmitRef<T extends FieldValues>(
+export function createFormSubmitRef<T extends FieldValues>(
   form: UseFormReturn<T>, // Typed with `T` extending `FieldValues`
   onSubmit: (data: T) => Promise<void>
 ): () => Promise<boolean> {
@@ -13,6 +14,12 @@ export function formSubmitRef<T extends FieldValues>(
         },
         (error) => {
           console.error(error);
+          toast({
+            title: "Fehler",
+            description:
+              "Das Speichern des Formulars ist fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben.",
+            variant: "destructive",
+          });
           resolve(false); // Resolve false on error
         }
       )();
