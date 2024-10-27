@@ -4,12 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import { uid } from "uid";
 import TextField from "../../forms/components/TextField";
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { incomingInvoiceSchema } from "./incomingInvoiceSchema";
 import { Form } from "@/components/ui/form";
@@ -21,6 +16,8 @@ import FormComboBox from "../../forms/components/FormComboBox";
 import ContactStore from "../../contacts/contactStore";
 import { ComboBoxOption } from "@/components/ui/ComboBox";
 import IncomingInvoiceStore from "@/features/invoices/incoming/incomingInvoiceStore";
+import { useComposedRef } from "@/lib/utils/useComposedRef";
+import { formSubmitRef } from "@/features/forms/formSubmitRef";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<boolean>;
@@ -31,7 +28,6 @@ type IncomingInvoiceFormProps = {
   formType: "create" | "update";
   showButton?: boolean;
   className?: string;
-  invoiceId?: string;
 };
 
 export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
@@ -40,7 +36,6 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
     formType,
     showButton = true,
     className,
-    invoiceId,
   }: IncomingInvoiceFormProps,
   ref: React.Ref<IncomingInvoiceFormRef>
 ) {
@@ -58,7 +53,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
       const invoiceStore = await IncomingInvoiceStore.getInstance();
       const error = await invoiceStore.set(data);
       if (error) {
-        return toast({
+        toast({
           title: "Fehler",
           description: error.message,
           variant: "destructive",
@@ -88,24 +83,9 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
     fetchContacts();
   }, []);
 
-  useImperativeHandle<IncomingInvoiceFormRef, IncomingInvoiceFormRef>(
-    ref,
-    () => ({
-      submit: () =>
-        new Promise<boolean>((resolve) => {
-          form.handleSubmit(
-            async (data) => {
-              await onSubmit(data);
-              resolve(true); // Resolve true on success
-            },
-            (error) => {
-              console.error(error);
-              resolve(false); // Resolve false on error
-            }
-          )();
-        }),
-    })
-  );
+  useComposedRef(ref, {
+    submit: formSubmitRef(form, onSubmit),
+  });
 
   return (
     <Form {...form}>
