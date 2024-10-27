@@ -98,7 +98,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
           <FormDatePicker label="Rechnungsdatum" name="documentDate" />
           <FormDatePicker label="Erhalten am" name="receivedDate" />
         </div>
-        <TextField name="amount" label="Betrag" type="number" />
+        <TextField name="amount" label="Betrag" type="currency" />
         <FormComboBox
           name="contact"
           label="Kontakt"
