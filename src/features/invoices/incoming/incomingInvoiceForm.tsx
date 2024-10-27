@@ -3,7 +3,7 @@ import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import { uid } from "uid";
-import TextField from "../forms/components/TextField";
+import TextField from "../../forms/components/TextField";
 import React, {
   forwardRef,
   useEffect,
@@ -11,16 +11,16 @@ import React, {
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
-import { incomingInvoiceSchema } from "./invoiceSchema";
+import { incomingInvoiceSchema } from "./incomingInvoiceSchema";
 import { Form } from "@/components/ui/form";
-import FormDatePicker from "../forms/components/FormDatePicker";
+import FormDatePicker from "../../forms/components/FormDatePicker";
 import { FileUploadField } from "@/components/ui/fileDrop";
 import { Directories } from "@/lib/utils/tauri/diskUtils";
 import { Button } from "@/components/ui/button";
-import FormComboBox from "../forms/components/FormComboBox";
-import ContactStore from "../contacts/contactStore";
+import FormComboBox from "../../forms/components/FormComboBox";
+import ContactStore from "../../contacts/contactStore";
 import { ComboBoxOption } from "@/components/ui/ComboBox";
-import IncomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
+import IncomingInvoiceStore from "@/features/invoices/incoming/incomingInvoiceStore";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<void>;

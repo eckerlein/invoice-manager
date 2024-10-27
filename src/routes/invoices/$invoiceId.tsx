@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import {
   IncomingInvoiceForm,
   IncomingInvoiceFormRef,
-} from "@/features/invoices/incomingInvoiceForm";
-import { IncomingInvoice } from "@/features/invoices/invoiceSchema";
-import IncomingInvoiceStore from "@/features/invoices/incomingInvoiceStore"; // Update to use the singleton
+} from "@/features/invoices/incoming/incomingInvoiceForm";
+import { IncomingInvoice } from "@/features/invoices/incoming/incomingInvoiceSchema";
+import IncomingInvoiceStore from "@/features/invoices/incoming/incomingInvoiceStore"; // Update to use the singleton
 import {
   createFileRoute,
   useNavigate,

@@ -1,5 +1,8 @@
 import { load } from "@tauri-apps/plugin-store";
-import { IncomingInvoice, incomingInvoiceSchema } from "./invoiceSchema";
+import {
+  IncomingInvoice,
+  incomingInvoiceSchema,
+} from "./incomingInvoiceSchema";
 
 class IncomingInvoiceStore {
   private static instance: IncomingInvoiceStore | null = null;

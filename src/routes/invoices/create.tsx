@@ -3,13 +3,12 @@ import { Button } from "@/components/ui/button";
 import {
   IncomingInvoiceForm,
   IncomingInvoiceFormRef,
-} from "@/features/invoices/incomingInvoiceForm";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+} from "@/features/invoices/incoming/incomingInvoiceForm";
+import { createFileRoute } from "@tanstack/react-router";
 import { useRef } from "react";
 
 export const Route = createFileRoute("/invoices/create")({
   component: () => {
-    const navigate = useNavigate();
     const formRef = useRef<IncomingInvoiceFormRef>(null);
 
     return (
@@ -23,7 +22,7 @@ export const Route = createFileRoute("/invoices/create")({
                 variant="default"
                 onClick={async () => {
                   await formRef.current?.submit();
-                  // navigate({ to: "/contacts" });
+                  // history.back();
                 }}
               >
                 Speichern

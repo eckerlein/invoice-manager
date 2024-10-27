@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { IncomingInvoice } from "@/features/invoices/invoiceSchema";
+import { IncomingInvoice } from "@/features/invoices/incoming/incomingInvoiceSchema";
 import ContactStore from "@/features/contacts/contactStore"; // Update to import ContactStore singleton
 import { getContactName } from "@/features/contacts/contactUtils";
-import IncomingInvoiceStore from "@/features/invoices/incomingInvoiceStore";
+import IncomingInvoiceStore from "@/features/invoices/incoming/incomingInvoiceStore";
 
 type InvoiceTableProps = {
   onRowClick?: (invoiceId: string) => void;
