@@ -51,14 +51,8 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
   async function onSubmit(data: z.infer<typeof incomingInvoiceSchema>) {
     try {
       const invoiceStore = await IncomingInvoiceStore.getInstance();
-      const error = await invoiceStore.set(data);
-      if (error) {
-        toast({
-          title: "Fehler",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
+      const err = await invoiceStore.set(data);
+      if (err) throw err;
 
       toast({
         title: `Rechnung ${formType === "create" ? "erstellt" : "aktualisiert"}`,

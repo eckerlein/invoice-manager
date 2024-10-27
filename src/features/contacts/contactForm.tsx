@@ -62,21 +62,16 @@ export const ContactForm = forwardRef(function ContactForm(
     try {
       const store = await ContactStore.getInstance();
       const err = await store.set(data);
-      if (err) {
-        toast({
-          title: "Error",
-          description: err.message,
-          variant: "destructive",
-        });
-      }
+      if (err) throw err;
+
       toast({
         title: `Kontakt ${formType === "create" ? "erstellt" : "aktualisiert"}`,
       });
-    } catch (error) {
-      console.error("Error saving contact:", error);
+    } catch (err) {
+      console.error("Error saving contact:", err);
       toast({
         title: "Error",
-        description: "Failed to save contact.",
+        description: "Das Speichern des Kontaktes ist fehlgeschlagen.",
         variant: "destructive",
       });
     }
