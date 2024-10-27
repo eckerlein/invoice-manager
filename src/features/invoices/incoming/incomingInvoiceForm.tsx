@@ -41,6 +41,8 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
 ) {
   defaultValues ??= {
     id: uid(),
+    documentDate: new Date(),
+    receivedDate: new Date(),
   };
 
   const form = useForm<z.infer<typeof incomingInvoiceSchema>>({
