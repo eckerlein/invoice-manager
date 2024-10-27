@@ -11,11 +11,13 @@ export default ({
   label,
   className,
   disabled,
+  defaultValue,
 }: {
   name: string;
   label?: string;
   className?: string;
   disabled?: boolean;
+  defaultValue?: Date;
 }) => {
   return (
     <FormField
@@ -24,7 +26,7 @@ export default ({
         <FormItem className={className}>
           <FormControl>
             <DatePicker
-              defaultValue={value}
+              defaultValue={defaultValue ?? value}
               onChange={onChange}
               disabled={disabled}
               label={label}
