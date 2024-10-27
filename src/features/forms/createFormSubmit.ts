@@ -1,7 +1,7 @@
 import { toast } from "@/hooks/use-toast";
 import { UseFormReturn, FieldValues } from "react-hook-form";
 
-export function createFormSubmitRef<T extends FieldValues>(
+export function createFormSubmit<T extends FieldValues>(
   form: UseFormReturn<T>, // Typed with `T` extending `FieldValues`
   onSubmit: (data: T) => Promise<void>
 ): () => Promise<boolean> {

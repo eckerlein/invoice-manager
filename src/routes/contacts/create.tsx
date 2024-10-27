@@ -25,8 +25,8 @@ export const Route = createFileRoute("/contacts/create")({
               <Button
                 variant="default"
                 onClick={async () => {
-                  await formRef.current?.submit();
-                  navigate({ to: "/contacts" });
+                  const success = await formRef.current?.submit();
+                  if (success) history.back();
                 }}
               >
                 Speichern

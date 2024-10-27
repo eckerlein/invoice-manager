@@ -17,7 +17,7 @@ import ContactStore from "../../contacts/contactStore";
 import { ComboBoxOption } from "@/components/ui/ComboBox";
 import IncomingInvoiceStore from "@/features/invoices/incoming/incomingInvoiceStore";
 import { useComposedRef } from "@/lib/utils/useComposedRef";
-import { createFormSubmitRef } from "@/features/forms/createFormSubmitRef";
+import { createFormSubmit } from "@/features/forms/createFormSubmit";
 
 export type IncomingInvoiceFormRef = {
   submit: () => Promise<boolean>;
@@ -80,7 +80,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
   }, []);
 
   useComposedRef(ref, {
-    submit: createFormSubmitRef(form, onSubmit),
+    submit: createFormSubmit(form, onSubmit),
   });
 
   return (
@@ -88,7 +88,7 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          createFormSubmitRef(form, onSubmit)();
+          createFormSubmit(form, onSubmit)();
         }}
         className={twMerge("flex flex-col gap-4", className)}
       >

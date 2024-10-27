@@ -26,7 +26,7 @@ import FormSectionSingle from "../forms/components/FormSectionSingle";
 import ContactStore from "./contactStore";
 import { twMerge } from "tailwind-merge";
 import { useComposedRef } from "@/lib/utils/useComposedRef";
-import { createFormSubmitRef } from "../forms/createFormSubmitRef";
+import { createFormSubmit } from "../forms/createFormSubmit";
 
 export type ContactFormRef = {
   submit: () => Promise<boolean>;
@@ -78,13 +78,16 @@ export const ContactForm = forwardRef(function ContactForm(
   }
 
   useComposedRef(ref, {
-    submit: createFormSubmitRef(form, onSubmit),
+    submit: createFormSubmit(form, onSubmit),
   });
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          createFormSubmit(form, onSubmit)();
+        }}
         className={twMerge("flex flex-col gap-4", className)}
       >
         <FormSelect
