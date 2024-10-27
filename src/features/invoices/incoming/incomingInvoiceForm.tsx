@@ -23,7 +23,7 @@ import { ComboBoxOption } from "@/components/ui/ComboBox";
 import IncomingInvoiceStore from "@/features/invoices/incoming/incomingInvoiceStore";
 
 export type IncomingInvoiceFormRef = {
-  submit: () => Promise<void>;
+  submit: () => Promise<boolean>;
 };
 
 type IncomingInvoiceFormProps = {
@@ -88,9 +88,24 @@ export const IncomingInvoiceForm = forwardRef(function IncomingInvoiceForm(
     fetchContacts();
   }, []);
 
-  useImperativeHandle<IncomingInvoiceFormRef, any>(ref, () => ({
-    submit: () => form.handleSubmit(onSubmit, (e) => console.error(e))(),
-  }));
+  useImperativeHandle<IncomingInvoiceFormRef, IncomingInvoiceFormRef>(
+    ref,
+    () => ({
+      submit: () =>
+        new Promise<boolean>((resolve) => {
+          form.handleSubmit(
+            async (data) => {
+              await onSubmit(data);
+              resolve(true); // Resolve true on success
+            },
+            (error) => {
+              console.error(error);
+              resolve(false); // Resolve false on error
+            }
+          )();
+        }),
+    })
+  );
 
   return (
     <Form {...form}>

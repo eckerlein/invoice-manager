@@ -21,7 +21,8 @@ export const Route = createFileRoute("/invoices/create")({
               <Button
                 variant="default"
                 onClick={async () => {
-                  await formRef.current?.submit();
+                  const success = await formRef.current?.submit();
+                  if (success) history.back();
                   // history.back();
                 }}
               >
