@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef } from "react";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
@@ -25,9 +25,11 @@ import getDiscriminatedUnionValues from "@/lib/utils/zod/getDiscriminatedUnionVa
 import FormSectionSingle from "../forms/components/FormSectionSingle";
 import ContactStore from "./contactStore";
 import { twMerge } from "tailwind-merge";
+import { useComposedRef } from "@/lib/utils/useComposedRef";
+import { formSubmitRef } from "../forms/formSubmitRef";
 
 export type ContactFormRef = {
-  submit: () => Promise<void>;
+  submit: () => Promise<boolean>;
 };
 
 export const ContactForm = forwardRef(function ContactForm(
@@ -61,7 +63,7 @@ export const ContactForm = forwardRef(function ContactForm(
       const store = await ContactStore.getInstance();
       const err = await store.set(data);
       if (err) {
-        return toast({
+        toast({
           title: "Error",
           description: err.message,
           variant: "destructive",
@@ -80,9 +82,9 @@ export const ContactForm = forwardRef(function ContactForm(
     }
   }
 
-  useImperativeHandle<ContactFormRef, any>(ref, () => ({
-    submit: () => form.handleSubmit(onSubmit)(),
-  }));
+  useComposedRef(ref, {
+    submit: formSubmitRef(form, onSubmit),
+  });
 
   return (
     <Form {...form}>
