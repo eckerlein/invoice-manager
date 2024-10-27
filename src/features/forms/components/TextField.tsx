@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { assertUnreachable } from "@/lib/utils";
-import { i } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 import { useState } from "react";
 
 type TextFieldType = "text" | "number" | "stringNumber" | "currency";
@@ -35,7 +34,6 @@ const TextField = ({
         const [isFocused, setIsFocused] = useState(false);
 
         function parseValue(value: string, type?: TextFieldType) {
-          console.log("parseValue", value, typeof value);
           switch (type) {
             case "number":
               const cleanedString = value.replace(/[^0-9]/g, "");
@@ -51,10 +49,9 @@ const TextField = ({
               if (allowedParts.length === 2)
                 allowedParts[1] = allowedParts[1].slice(0, 2);
 
-              const cleanedCurrency = allowedParts.join(".");
+              const cleanedCurrency = allowedParts.join(",");
 
               if (cleanedCurrency === "") return "";
-              console.log("cleanedCurrency", cleanedCurrency);
               return cleanedCurrency;
 
             case "stringNumber":
@@ -73,17 +70,27 @@ const TextField = ({
         });
 
         function getRenderedValue() {
-          console.log("getRenderedValue", isFocused, value);
-          if (isFocused) return value;
+          if (isFocused) {
+            if (type === "currency") {
+              if (value === undefined) return "";
+              return value.toString().replace(".", ",");
+            }
+          } else {
+            if (type === "currency") {
+              if (value === undefined) return "";
 
-          if (type === "currency") {
-            if (value === undefined) return "";
-            if (typeof value === "string") value = Number(value);
-            return Euro.format(value);
+              console.log("value", value, typeof value);
+              return Euro.format(value);
+            }
           }
+          return value;
         }
 
-        console.log("isFocused", isFocused);
+        function updateValueAfterBlur() {
+          if (type === "currency" && typeof value === "string") {
+            updateValue(Number(value.replace(",", ".")));
+          }
+        }
 
         return (
           <FormItem className={className}>
@@ -96,6 +103,7 @@ const TextField = ({
                 value={getRenderedValue()}
                 onBlur={() => {
                   setIsFocused(false);
+                  updateValueAfterBlur();
                   onBlur();
                 }}
                 onFocus={() => setIsFocused(true)}
