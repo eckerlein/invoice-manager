@@ -51,9 +51,10 @@ const TextField = ({
               if (allowedParts.length === 2)
                 allowedParts[1] = allowedParts[1].slice(0, 2);
 
-              const cleanedCurrency = allowedParts.join(",");
+              const cleanedCurrency = allowedParts.join(".");
 
               if (cleanedCurrency === "") return "";
+              console.log("cleanedCurrency", cleanedCurrency);
               return cleanedCurrency;
 
             case "stringNumber":
@@ -63,6 +64,22 @@ const TextField = ({
               return value;
             default:
               assertUnreachable(type);
+          }
+        }
+
+        const Euro = new Intl.NumberFormat("de-DE", {
+          style: "currency",
+          currency: "EUR",
+        });
+
+        function getRenderedValue() {
+          console.log("getRenderedValue", isFocused, value);
+          if (isFocused) return value;
+
+          if (type === "currency") {
+            if (value === undefined) return "";
+            if (typeof value === "string") value = Number(value);
+            return Euro.format(value);
           }
         }
 
@@ -76,7 +93,7 @@ const TextField = ({
                 placeholder={placeholder ?? label}
                 disabled={disabled}
                 onChange={(e) => updateValue(parseValue(e.target.value, type))}
-                value={value}
+                value={getRenderedValue()}
                 onBlur={() => {
                   setIsFocused(false);
                   onBlur();
