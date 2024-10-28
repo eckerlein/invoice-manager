@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { cva } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
 
 const variants = {
   size: {
@@ -34,6 +35,7 @@ type PageHeaderProps = {
     size?: keyof typeof variants.size;
     position?: keyof typeof variants.position;
   };
+  className?: string;
 };
 
 export default function PageHeader({
@@ -41,9 +43,10 @@ export default function PageHeader({
   showBackButton,
   actionBar,
   variants,
+  className,
 }: PageHeaderProps) {
   return (
-    <header className={pageHeaderVariants(variants)}>
+    <header className={twMerge(pageHeaderVariants(variants), className)}>
       <div className="flex gap-4 items-center">
         {showBackButton && (
           <Button
