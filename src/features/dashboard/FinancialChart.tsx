@@ -1,4 +1,4 @@
-import { GitCommitVertical, TrendingUp } from "lucide-react";
+import { GitCommitVertical, TrendingDown, TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { useEffect, useState } from "react";
 import { format, subMonths } from "date-fns";
@@ -24,15 +24,15 @@ import OutgoingInvoiceStore from "@/features/invoices/outgoing/outgoingInvoiceSt
 const chartConfig = {
   einnahmen: {
     label: "Einnahmen",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-good))",
   },
   ausgaben: {
     label: "Ausgaben",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-bad))",
   },
   total: {
     label: "Total",
-    color: "hsl(var(--chart-3))",
+    color: "hsl(var(--chart-neutral))",
   },
 } satisfies ChartConfig;
 
@@ -124,7 +124,7 @@ export function FinancialChart() {
       <CardContent>
         <div
           className={`text-6xl ${
-            overallTotal >= 0 ? "text-chart-2" : "text-chart-1"
+            overallTotal >= 0 ? "text-chart-good" : "text-chart-bad"
           }`}
         >
           {overallTotal >= 0 ? "+" : "-"}
@@ -214,11 +214,23 @@ export function FinancialChart() {
       <CardFooter>
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Umsatz der letzten Monate <TrendingUp className="h-4 w-4" />
+            <div className="flex items-center gap-0 font-medium leading-none">
+              Der Umsatz ist in den letzten 6 Monaten{" "}
+              {overallTotal >= 0 ? (
+                <span className="ml-1 flex items-center gap-1 text-chart-good">
+                  gestiegen
+                  <TrendingUp className="h-4 w-4" />
+                </span>
+              ) : (
+                <span className="ml-1 flex items-center gap-1 text-chart-bad">
+                  gefallen
+                  <TrendingDown className="h-4 w-4" />
+                </span>
+              )}
             </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Anzeigen der Einnahmen und Ausgaben für die letzten 6 Monate
+            <div className="flex items-center gap-2 leading-sm text-muted-foreground">
+              Hier sehen Sie, wie sich Ihre Einnahmen und Ausgaben in den
+              letzten 6 Monaten entwickelt haben.
             </div>
           </div>
         </div>
