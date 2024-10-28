@@ -2,6 +2,7 @@ import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { useEffect, useState } from "react";
 import { format, subMonths } from "date-fns";
+import { de } from "date-fns/locale";
 
 import {
   Card,
@@ -23,11 +24,11 @@ import OutgoingInvoiceStore from "@/features/invoices/outgoing/outgoingInvoiceSt
 const chartConfig = {
   einnahmen: {
     label: "Einnahmen",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-2))",
   },
   ausgaben: {
     label: "Ausgaben",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
   total: {
     label: "Total",
@@ -37,6 +38,7 @@ const chartConfig = {
 
 type ChartData = {
   month: string;
+  displayMonth: string;
   einnahmen: number;
   ausgaben: number;
   total: number;
@@ -59,7 +61,7 @@ export function FinancialChart() {
         const date = subMonths(new Date(), i);
         return {
           month: format(date, "yyyy-MM"),
-          displayMonth: format(date, "MMMM"),
+          displayMonth: format(date, "MMMM", { locale: de }),
           einnahmen: 0,
           ausgaben: 0,
           total: 0,
@@ -122,7 +124,7 @@ export function FinancialChart() {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="displayMonth"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
