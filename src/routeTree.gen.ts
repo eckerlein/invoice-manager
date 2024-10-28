@@ -14,7 +14,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as InvoicesIndexImport } from './routes/invoices/index'
 import { Route as ContactsIndexImport } from './routes/contacts/index'
-import { Route as InvoicesCreateImport } from './routes/invoices/create'
+import { Route as InvoicesCreateOutgoingImport } from './routes/invoices/createOutgoing'
+import { Route as InvoicesCreateIncomingImport } from './routes/invoices/createIncoming'
 import { Route as InvoicesInvoiceIdImport } from './routes/invoices/$invoiceId'
 import { Route as ContactsCreateImport } from './routes/contacts/create'
 import { Route as ContactsContactIdImport } from './routes/contacts/$contactId'
@@ -39,9 +40,15 @@ const ContactsIndexRoute = ContactsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const InvoicesCreateRoute = InvoicesCreateImport.update({
-  id: '/invoices/create',
-  path: '/invoices/create',
+const InvoicesCreateOutgoingRoute = InvoicesCreateOutgoingImport.update({
+  id: '/invoices/createOutgoing',
+  path: '/invoices/createOutgoing',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const InvoicesCreateIncomingRoute = InvoicesCreateIncomingImport.update({
+  id: '/invoices/createIncoming',
+  path: '/invoices/createIncoming',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,11 +102,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InvoicesInvoiceIdImport
       parentRoute: typeof rootRoute
     }
-    '/invoices/create': {
-      id: '/invoices/create'
-      path: '/invoices/create'
-      fullPath: '/invoices/create'
-      preLoaderRoute: typeof InvoicesCreateImport
+    '/invoices/createIncoming': {
+      id: '/invoices/createIncoming'
+      path: '/invoices/createIncoming'
+      fullPath: '/invoices/createIncoming'
+      preLoaderRoute: typeof InvoicesCreateIncomingImport
+      parentRoute: typeof rootRoute
+    }
+    '/invoices/createOutgoing': {
+      id: '/invoices/createOutgoing'
+      path: '/invoices/createOutgoing'
+      fullPath: '/invoices/createOutgoing'
+      preLoaderRoute: typeof InvoicesCreateOutgoingImport
       parentRoute: typeof rootRoute
     }
     '/contacts/': {
@@ -126,7 +140,8 @@ export interface FileRoutesByFullPath {
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
   '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
-  '/invoices/create': typeof InvoicesCreateRoute
+  '/invoices/createIncoming': typeof InvoicesCreateIncomingRoute
+  '/invoices/createOutgoing': typeof InvoicesCreateOutgoingRoute
   '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
@@ -136,7 +151,8 @@ export interface FileRoutesByTo {
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
   '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
-  '/invoices/create': typeof InvoicesCreateRoute
+  '/invoices/createIncoming': typeof InvoicesCreateIncomingRoute
+  '/invoices/createOutgoing': typeof InvoicesCreateOutgoingRoute
   '/contacts': typeof ContactsIndexRoute
   '/invoices': typeof InvoicesIndexRoute
 }
@@ -147,7 +163,8 @@ export interface FileRoutesById {
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
   '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
-  '/invoices/create': typeof InvoicesCreateRoute
+  '/invoices/createIncoming': typeof InvoicesCreateIncomingRoute
+  '/invoices/createOutgoing': typeof InvoicesCreateOutgoingRoute
   '/contacts/': typeof ContactsIndexRoute
   '/invoices/': typeof InvoicesIndexRoute
 }
@@ -159,7 +176,8 @@ export interface FileRouteTypes {
     | '/contacts/$contactId'
     | '/contacts/create'
     | '/invoices/$invoiceId'
-    | '/invoices/create'
+    | '/invoices/createIncoming'
+    | '/invoices/createOutgoing'
     | '/contacts'
     | '/invoices'
   fileRoutesByTo: FileRoutesByTo
@@ -168,7 +186,8 @@ export interface FileRouteTypes {
     | '/contacts/$contactId'
     | '/contacts/create'
     | '/invoices/$invoiceId'
-    | '/invoices/create'
+    | '/invoices/createIncoming'
+    | '/invoices/createOutgoing'
     | '/contacts'
     | '/invoices'
   id:
@@ -177,7 +196,8 @@ export interface FileRouteTypes {
     | '/contacts/$contactId'
     | '/contacts/create'
     | '/invoices/$invoiceId'
-    | '/invoices/create'
+    | '/invoices/createIncoming'
+    | '/invoices/createOutgoing'
     | '/contacts/'
     | '/invoices/'
   fileRoutesById: FileRoutesById
@@ -188,7 +208,8 @@ export interface RootRouteChildren {
   ContactsContactIdRoute: typeof ContactsContactIdRoute
   ContactsCreateRoute: typeof ContactsCreateRoute
   InvoicesInvoiceIdRoute: typeof InvoicesInvoiceIdRoute
-  InvoicesCreateRoute: typeof InvoicesCreateRoute
+  InvoicesCreateIncomingRoute: typeof InvoicesCreateIncomingRoute
+  InvoicesCreateOutgoingRoute: typeof InvoicesCreateOutgoingRoute
   ContactsIndexRoute: typeof ContactsIndexRoute
   InvoicesIndexRoute: typeof InvoicesIndexRoute
 }
@@ -198,7 +219,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactsContactIdRoute: ContactsContactIdRoute,
   ContactsCreateRoute: ContactsCreateRoute,
   InvoicesInvoiceIdRoute: InvoicesInvoiceIdRoute,
-  InvoicesCreateRoute: InvoicesCreateRoute,
+  InvoicesCreateIncomingRoute: InvoicesCreateIncomingRoute,
+  InvoicesCreateOutgoingRoute: InvoicesCreateOutgoingRoute,
   ContactsIndexRoute: ContactsIndexRoute,
   InvoicesIndexRoute: InvoicesIndexRoute,
 }
@@ -219,7 +241,8 @@ export const routeTree = rootRoute
         "/contacts/$contactId",
         "/contacts/create",
         "/invoices/$invoiceId",
-        "/invoices/create",
+        "/invoices/createIncoming",
+        "/invoices/createOutgoing",
         "/contacts/",
         "/invoices/"
       ]
@@ -236,8 +259,11 @@ export const routeTree = rootRoute
     "/invoices/$invoiceId": {
       "filePath": "invoices/$invoiceId.tsx"
     },
-    "/invoices/create": {
-      "filePath": "invoices/create.tsx"
+    "/invoices/createIncoming": {
+      "filePath": "invoices/createIncoming.tsx"
+    },
+    "/invoices/createOutgoing": {
+      "filePath": "invoices/createOutgoing.tsx"
     },
     "/contacts/": {
       "filePath": "contacts/index.tsx"

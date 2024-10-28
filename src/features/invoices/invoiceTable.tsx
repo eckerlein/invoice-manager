@@ -177,11 +177,11 @@ export default function InvoiceTable({
                 <TableCell className="truncate">
                   {invoice.type === "outgoing" ? (
                     <span className="flex items-center text-green-500">
-                      <TrendingUp className="mr-1" /> Outgoing
+                      <TrendingUp className="mr-1" /> Verkaufsrechnung
                     </span>
                   ) : (
                     <span className="flex items-center text-red-500">
-                      <TrendingDown className="mr-1" /> Incoming
+                      <TrendingDown className="mr-1" /> Einkaufsrechnung
                     </span>
                   )}
                 </TableCell>

@@ -7,7 +7,7 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef } from "react";
 
-export const Route = createFileRoute("/invoices/create")({
+export const Route = createFileRoute("/invoices/createIncoming")({
   component: () => {
     const formRef = useRef<IncomingInvoiceFormRef>(null);
 
