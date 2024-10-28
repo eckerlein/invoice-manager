@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
           <div className="grid grid-cols-2 grid-rows-[auto_1fr_1fr_1fr_1fr_1fr] h-full w-full gap-4">
             <PageHeader
               className="-mx-4 -mt-4 col-span-2"
-              title="Dashboard"
+              title="Übersicht"
               variants={{ position: "static" }}
             />
             <div className="row-span-3">
@@ -39,15 +39,15 @@ export const Route = createFileRoute("/")({
                 key={tabKey} // Re-render Tabs on resize
                 className="w-full h-full grid grid-rows-[auto_1fr] gap-2"
               >
-                <TabsList className="w-full grid grid-cols-2">
+                <TabsList className="w-full grid grid-cols-2 transition-colors hover:shadow-lg">
                   <TabsTrigger value="financial-trends">Trends</TabsTrigger>
                   <TabsTrigger value="balance">Balance</TabsTrigger>
                 </TabsList>
                 <TabsContent value="financial-trends" className="h-full">
-                  <IncomeExpenseTrendChart className="h-full" />
+                  <IncomeExpenseTrendChart className="h-full transition-colors hover:shadow-lg" />
                 </TabsContent>
                 <TabsContent value="balance">
-                  <BalanceOverTimeChart className="h-full" />
+                  <BalanceOverTimeChart className="h-full transition-colors hover:shadow-lg" />
                 </TabsContent>
               </Tabs>
             </div>
@@ -57,14 +57,14 @@ export const Route = createFileRoute("/")({
               key={"invoices" + tabKey} // Re-render Tabs on resize
               className="w-full grid grid-rows-[auto_1fr] gap-2 row-span-3"
             >
-              <TabsList className="w-full grid grid-cols-2">
+              <TabsList className="w-full grid grid-cols-2 transition-colors hover:shadow-lg">
                 <TabsTrigger value="invoices">Rechnungen</TabsTrigger>
                 <TabsTrigger value="contacts">Kontakte</TabsTrigger>
               </TabsList>
 
               <TabsContent
                 value="invoices"
-                className="overflow-y-auto border rounded-lg min-h-0"
+                className="overflow-y-auto border rounded-lg min-h-0 transition-colors hover:shadow-lg"
               >
                 <PageHeader
                   title={"Belege"}
@@ -80,7 +80,7 @@ export const Route = createFileRoute("/")({
 
               <TabsContent
                 value="contacts"
-                className="overflow-y-auto border rounded-lg min-h-0"
+                className="overflow-y-auto border rounded-lg min-h-0 transition-colors hover:shadow-lg"
               >
                 <PageHeader
                   title={"Belege"}
@@ -98,7 +98,7 @@ export const Route = createFileRoute("/")({
               </TabsContent>
             </Tabs>
 
-            <BalanceOverTimeBigChart className="col-span-2 row-span-2" />
+            <BalanceOverTimeBigChart className="col-span-2 row-span-2 transition-colors hover:shadow-lg" />
           </div>
         </div>
       </main>
