@@ -11,38 +11,43 @@ import { BalanceOverTimeBigChart } from "@/features/charts/BalanceOverTimeBigCha
 export const Route = createFileRoute("/")({
   component: () => {
     return (
-      <main className="relative w-full h-full">
-        <PageHeader title="Dashboard" size="lg" />
+      <main className="relative w-full min-h-screen overflow-y-auto flex flex-col">
+        <PageHeader title="Dashboard" variants={{ position: "static" }} />
 
-        <div className="grid grid-cols-2 gap-4 p-4">
-          <Tabs
-            defaultValue="financial-trends"
-            className="w-full aspect-[3/2] overflow-clip grid grid-rows-[auto_1fr] gap-2"
-          >
-            <TabsList className="w-full grid grid-cols-2">
-              <TabsTrigger value="financial-trends">Trends</TabsTrigger>
-              <TabsTrigger value="balance">Balance</TabsTrigger>
-            </TabsList>
-            <TabsContent value="financial-trends" className="h-full">
-              <IncomeExpenseTrendChart className="h-full" />
-            </TabsContent>
-            <TabsContent value="balance">
-              <BalanceOverTimeChart className="h-full" />
-            </TabsContent>
-          </Tabs>
-          {/* <DashboardCard title="Rechnungen" link="/invoices/create">
-            <InvoiceTable />
-          </DashboardCard> */}
+        <div className="h-full w-full p-4">
+          <div className="grid grid-cols-2 grid-rows-5 h-full w-full gap-4">
+            <div className="row-span-3">
+              <Tabs
+                defaultValue="financial-trends"
+                className="w-full h-full overflow-clip grid grid-rows-[auto_1fr] gap-2 "
+              >
+                <TabsList className="w-full grid grid-cols-2">
+                  <TabsTrigger value="financial-trends">Trends</TabsTrigger>
+                  <TabsTrigger value="balance">Balance</TabsTrigger>
+                </TabsList>
+                <TabsContent value="financial-trends" className="h-full">
+                  <IncomeExpenseTrendChart className="h-full" />
+                </TabsContent>
+                <TabsContent value="balance">
+                  <BalanceOverTimeChart className="h-full" />
+                </TabsContent>
+              </Tabs>
+            </div>
 
-          <DashboardCard
-            title="Kontakte"
-            link="/contacts/create"
-            className="aspect-[3/2]"
-          >
+            <DashboardCard
+              title="Rechnungen"
+              link="/invoices/create"
+              className="row-span-3"
+            >
+              <InvoiceTable />
+            </DashboardCard>
+            <BalanceOverTimeBigChart className="col-span-2 row-span-2" />
+          </div>
+
+          {/* <DashboardCard title="Kontakte" link="/contacts/create">
             <ContactTable />
-          </DashboardCard>
+          </DashboardCard> */}
         </div>
-        <BalanceOverTimeBigChart />
       </main>
     );
   },

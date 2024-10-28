@@ -35,7 +35,13 @@ type ChartData = {
   balanceOverTime: number;
 };
 
-export function BalanceOverTimeBigChart() {
+type BalanceOverTimeChartProps = {
+  className?: string;
+};
+
+export function BalanceOverTimeBigChart({
+  className,
+}: BalanceOverTimeChartProps) {
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [overallBalance, setOverallBalance] = useState(0);
 
@@ -110,7 +116,7 @@ export function BalanceOverTimeBigChart() {
   }).format(overallBalance);
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>Saldoentwicklung der letzten 6 Monate</CardTitle>
