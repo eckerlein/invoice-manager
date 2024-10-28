@@ -39,12 +39,12 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
         ...form.getValues(),
         [name]: newSection as PathValue<TFieldValues, Path<TFieldValues>>,
       });
-    } else if (type === "array" && schema instanceof z.ZodArray) {
+    } else if (type === "array" && schema instanceof z.ZodType) {
       // Handle array section
       const currentValues = form.getValues(name) as
         | PathValue<TFieldValues, typeof name>[]
         | undefined;
-      const newSection = getEmptyObjectFromSchema(schema.element);
+      const newSection = getEmptyObjectFromSchema(schema);
 
       form.reset({
         ...form.getValues(),

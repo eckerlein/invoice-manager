@@ -16,7 +16,6 @@ export default function FormSectionSingle<
     <>
       {form.getValues(name) && (
         <div className="flex flex-col gap-2">
-          <h1>test</h1>
           {/* Render the section header */}
           <FormSectionHeader name={name} label={label} form={form} />
 
