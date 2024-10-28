@@ -17,14 +17,17 @@ export const Route = createFileRoute("/")({
         <div className="grid grid-cols-2 gap-4 p-4">
           <Tabs
             defaultValue="financial-trends"
-            className="w-full aspect-[3/2] grid grid-rows-[auto_1fr] gap-2"
+            className="w-full aspect-[3/2] overflow-clip grid grid-rows-[auto_1fr] gap-2"
           >
             <TabsList className="w-full grid grid-cols-2">
               <TabsTrigger value="financial-trends">Trends</TabsTrigger>
               <TabsTrigger value="balance">Balance</TabsTrigger>
             </TabsList>
             <TabsContent value="financial-trends" className="h-full">
-              <IncomeExpenseTrendChart chartHeight={150} className="h-full" />
+              <IncomeExpenseTrendChart
+                chartHeight={130}
+                className="h-full pb-0"
+              />
             </TabsContent>
             <TabsContent value="balance">
               <BalanceOverTimeChart />
