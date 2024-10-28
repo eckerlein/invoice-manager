@@ -184,7 +184,7 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
             { type: "single", name: "uploadedDocuments", label: "Dokumente" },
           ]}
           schemaMap={{
-            items: outgoingInvoiceSchema,
+            items: z.array(orderItemSchema),
             uploadedDocuments: z.array(z.string()),
           }}
         />
