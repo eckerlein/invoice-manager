@@ -8,22 +8,32 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { IncomingInvoice } from "@/features/invoices/incoming/incomingInvoiceSchema";
-import ContactStore from "@/features/contacts/contactStore"; // Update to import ContactStore singleton
+import ContactStore from "@/features/contacts/contactStore";
 import { getContactName } from "@/features/contacts/contactUtils";
 import IncomingInvoiceStore from "@/features/invoices/incoming/incomingInvoiceStore";
+import OutgoingInvoiceStore from "@/features/invoices/outgoing/outgoingInvoiceStore";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 type InvoiceTableProps = {
   onRowClick?: (invoiceId: string) => void;
   compact?: boolean;
 };
 
+type Invoice = {
+  id: string;
+  type: "incoming" | "outgoing";
+  name: string;
+  contact: string | undefined;
+  documentDate: Date;
+  amount: number;
+  uploadedDocumentsCount: number;
+};
+
 export default function InvoiceTable({
   onRowClick,
   compact = false,
 }: InvoiceTableProps) {
-  const [invoices, setInvoices] =
-    useState<[string, Omit<IncomingInvoice, "id">][]>();
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [contactNames, setContactNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -31,25 +41,56 @@ export default function InvoiceTable({
     showContact: false,
     showBelegnummer: false,
     showDokumentanzahl: false,
+    showType: true,
+    showFullType: false,
   });
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Fetch data
   useEffect(() => {
     async function fetchData() {
       try {
-        const invoiceStore = await IncomingInvoiceStore.getInstance();
-        const invoiceData = await invoiceStore.entries();
+        const [incomingStore, outgoingStore] = await Promise.all([
+          IncomingInvoiceStore.getInstance(),
+          OutgoingInvoiceStore.getInstance(),
+        ]);
 
-        // Get the singleton instance of ContactStore and retrieve contact data
+        const incomingInvoicesData = await incomingStore.entries();
+        const outgoingInvoicesData = await outgoingStore.entries();
+
+        const allInvoices: Invoice[] = [
+          ...incomingInvoicesData.map(([id, invoice]) => ({
+            id,
+            type: "incoming" as const,
+            name: invoice.name,
+            contact: invoice.contact,
+            documentDate: invoice.documentDate,
+            amount: invoice.amount,
+            uploadedDocumentsCount: invoice.uploadedDocuments?.length || 0,
+          })),
+          ...outgoingInvoicesData.map(([id, invoice]) => ({
+            id,
+            type: "outgoing" as const,
+            name: invoice.name,
+            contact: invoice.contact,
+            documentDate: invoice.documentDate,
+            amount: invoice.items.reduce(
+              (sum, item) => sum + item.price * item.quantity,
+              0
+            ),
+            uploadedDocumentsCount: invoice.uploadedDocuments?.length || 0,
+          })),
+        ];
+
+        const sortedInvoices = allInvoices.sort(
+          (a, b) => b.documentDate.getTime() - a.documentDate.getTime()
+        );
+
         const contactStore = await ContactStore.getInstance();
-        const contactPromises = invoiceData.map(async ([, invoice]) => {
+        const contactPromises = sortedInvoices.map(async (invoice) => {
           if (invoice.contact) {
             const contact = await contactStore.get(invoice.contact);
-            if (contact) {
-              return { [invoice.contact]: getContactName(contact) };
-            }
+            if (contact) return { [invoice.contact]: getContactName(contact) };
           }
           return {};
         });
@@ -57,7 +98,7 @@ export default function InvoiceTable({
         const contactNameResults = await Promise.all(contactPromises);
         const mergedContactNames = Object.assign({}, ...contactNameResults);
 
-        setInvoices(invoiceData);
+        setInvoices(sortedInvoices);
         setContactNames(mergedContactNames);
         setLoading(false);
       } catch (err) {
@@ -70,40 +111,41 @@ export default function InvoiceTable({
     fetchData();
   }, []);
 
-  // Detect container width and adjust visible columns
   useEffect(() => {
     function handleResize() {
       if (containerRef.current) {
         const width = containerRef.current.offsetWidth;
         setVisibleColumns({
-          showContact: width >= 400, // Show contact if container is at least 400px wide
-          showBelegnummer: width >= 500, // Show Belegnummer if container is at least 500px wide
-          showDokumentanzahl: width >= 600, // Show Dokumentanzahl if container is at least 600px wide
+          showContact: width >= 400,
+          showBelegnummer: width >= 600,
+          showFullType: width >= 600,
+          showDokumentanzahl: width >= 600,
+          showType: true,
         });
       }
     }
 
-    // Run resize logic after the data is fetched
-    if (!loading) {
-      handleResize();
-    }
-
-    // Add a resize listener
+    if (!loading) handleResize();
     window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, [loading, invoices]);
 
   if (error) return <div>Error: {error.message}</div>;
-  if (loading) return <div></div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div ref={containerRef} className="w-full">
       <Table className="table-fixed w-full min-w-0">
         <TableHeader>
           <TableRow>
+            {visibleColumns.showType && (
+              <TableHead
+                className={`truncate ${!visibleColumns.showFullType ? "w-16" : "w-32"}`}
+              >
+                Typ
+              </TableHead>
+            )}
             <TableHead className="truncate">Name</TableHead>
             {visibleColumns.showContact && (
               <TableHead className="truncate">Kontakt</TableHead>
@@ -118,17 +160,24 @@ export default function InvoiceTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices?.map(([id, invoice], index) => (
+          {invoices.map((invoice, index) => (
             <TableRow
               key={index}
               onClick={() => {
                 if (onRowClick) {
-                  onRowClick(id);
+                  onRowClick(invoice.id);
                 } else {
-                  navigate({
-                    to: `/invoices/$invoiceId`,
-                    params: { invoiceId: id },
-                  });
+                  if (invoice.type === "outgoing") {
+                    navigate({
+                      to: `/invoices/$outgoingId/edit`,
+                      params: { outgoingId: invoice.id },
+                    });
+                  } else if (invoice.type === "incoming") {
+                    navigate({
+                      to: `/invoices/$incomingInvoiceId`,
+                      params: { incomingInvoiceId: invoice.id },
+                    });
+                  }
                 }
               }}
               className="cursor-pointer hover:bg-secondary transition-colors duration-100 ease-in-out"
@@ -136,6 +185,21 @@ export default function InvoiceTable({
               tabIndex={0}
               aria-label={`View details for invoice ${invoice.name}`}
             >
+              {visibleColumns.showType && (
+                <TableCell className="truncate">
+                  {invoice.type === "outgoing" ? (
+                    <span className="flex items-center gap-3 text-green-500">
+                      <TrendingUp />
+                      {visibleColumns.showFullType && " Verkauf"}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-3 text-red-500">
+                      <TrendingDown />
+                      {visibleColumns.showFullType && " Einkauf"}
+                    </span>
+                  )}
+                </TableCell>
+              )}
               <TableCell className="truncate">{invoice.name}</TableCell>
               {visibleColumns.showContact && (
                 <TableCell className="truncate">
@@ -148,11 +212,11 @@ export default function InvoiceTable({
                 {invoice.amount.toFixed(2)} €
               </TableCell>
               {visibleColumns.showBelegnummer && (
-                <TableCell className="truncate">{id}</TableCell>
+                <TableCell className="truncate">{invoice.id}</TableCell>
               )}
               {visibleColumns.showDokumentanzahl && (
                 <TableCell className="truncate">
-                  {invoice.uploadedDocuments.length}
+                  {invoice.uploadedDocumentsCount}
                 </TableCell>
               )}
             </TableRow>

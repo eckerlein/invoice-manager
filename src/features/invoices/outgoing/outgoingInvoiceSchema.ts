@@ -14,9 +14,10 @@ export const outgoingInvoiceSchema = z.object({
   name: z.string(),
   documentDate: z.date(),
   amount: z.number(),
-  contact: z.string().optional(),
-  lineItems: z.array(orderItemSchema),
+  contact: z.string(),
+  items: z.array(orderItemSchema),
   createdDate: z.date(),
   editDate: z.date().optional(),
   deleteDate: z.date().optional(),
+  uploadedDocuments: z.array(z.string()).optional(),
 });

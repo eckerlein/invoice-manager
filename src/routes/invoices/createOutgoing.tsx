@@ -1,21 +1,21 @@
 import PageHeader from "@/components/sections/PageHeader";
 import { Button } from "@/components/ui/button";
 import {
-  IncomingInvoiceForm,
-  IncomingInvoiceFormRef,
-} from "@/features/invoices/incoming/incomingInvoiceForm";
+  OutgoingInvoiceForm,
+  OutgoingInvoiceFormRef,
+} from "@/features/invoices/outgoing/outgoingInvoiceForm";
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef } from "react";
 
-export const Route = createFileRoute("/invoices/create")({
+export const Route = createFileRoute("/invoices/createOutgoing")({
   component: () => {
-    const formRef = useRef<IncomingInvoiceFormRef>(null);
+    const formRef = useRef<OutgoingInvoiceFormRef>(null);
 
     return (
       <main>
         <PageHeader
           showBackButton={true}
-          title="Eingehende Rechnung aufnehmen"
+          title="Ausgehende Rechnung erstellen"
           actionBar={
             <>
               <Button
@@ -23,7 +23,6 @@ export const Route = createFileRoute("/invoices/create")({
                 onClick={async () => {
                   const success = await formRef.current?.submit();
                   if (success) history.back();
-                  // history.back();
                 }}
               >
                 Speichern
@@ -31,7 +30,7 @@ export const Route = createFileRoute("/invoices/create")({
             </>
           }
         />
-        <IncomingInvoiceForm
+        <OutgoingInvoiceForm
           formType="create"
           className="px-4 pt-4 pb-12"
           ref={formRef}

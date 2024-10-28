@@ -4,6 +4,15 @@ import { getEmptyObjectFromSchema } from "@/lib/utils/zod/getEmtpyObjectFromSche
 import { UseFormReturn, FieldValues, Path, PathValue } from "react-hook-form";
 import { z } from "zod";
 
+// Define SchemaMapType with stricter typing based on field structure
+type SchemaMapType<TFieldValues> = Partial<
+  Record<
+    Path<TFieldValues>,
+    | z.ZodObject<any> // for "single" types
+    | z.ZodArray<z.ZodTypeAny> // for "array" types
+  >
+>;
+
 // Component to dynamically add sections to a form
 function FormSectionAdder<TFieldValues extends FieldValues>({
   sections,
@@ -16,35 +25,27 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
     type: "array" | "single";
   }[];
   form: UseFormReturn<TFieldValues>;
-  schemaMap: Partial<Record<Path<TFieldValues>, z.ZodObject<any>>>; // Typing it as partial
+  schemaMap: SchemaMapType<TFieldValues>; // Strict schemaMap typing
 }) {
   const handleAddSection = (
     name: Path<TFieldValues>,
     type: "array" | "single"
   ) => {
-    if (type === "single") {
-      const newSection = getEmptyObjectFromSchema(
-        schemaMap[name] as z.ZodObject<any>
-      );
-      form.setValue(
-        name,
-        newSection as PathValue<TFieldValues, Path<TFieldValues>>
-      );
+    const schema = schemaMap[name];
+
+    if (type === "single" && schema instanceof z.ZodType) {
+      const newSection = getEmptyObjectFromSchema(schema);
       form.reset({
         ...form.getValues(),
         [name]: newSection as PathValue<TFieldValues, Path<TFieldValues>>,
       });
-    } else if (type === "array") {
+    } else if (type === "array" && schema instanceof z.ZodArray) {
+      // Handle array section
       const currentValues = form.getValues(name) as
-        | PathValue<TFieldValues, Path<TFieldValues>>[]
+        | PathValue<TFieldValues, typeof name>[]
         | undefined;
-      const newSection = getEmptyObjectFromSchema(
-        schemaMap[name] as z.ZodObject<any>
-      );
-      form.setValue(name, [...(currentValues ?? []), newSection] as PathValue<
-        TFieldValues,
-        Path<TFieldValues>
-      >);
+      const newSection = getEmptyObjectFromSchema(schema.element);
+
       form.reset({
         ...form.getValues(),
         [name]: [...(currentValues ?? []), newSection] as PathValue<
@@ -52,6 +53,8 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
           Path<TFieldValues>
         >,
       });
+    } else {
+      console.error(`Schema type mismatch for ${name}. Expected a ${type}.`);
     }
   };
 
@@ -60,9 +63,8 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
       {sections.map((section) => {
         const currentValue = form.getValues(section.name);
 
-        // If type is 'single' and the value already exists, don't render the add button
         if (section.type === "single" && currentValue) {
-          return null;
+          return null; // Prevent adding a single field more than once
         }
 
         return (
