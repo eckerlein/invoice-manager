@@ -23,7 +23,6 @@ export function DashboardCard({
       <div className="flex flex-col h-full">
         <PageHeader
           title={title}
-          size="md"
           actionBar={
             <Link
               to={link}

@@ -116,9 +116,9 @@ export function BalanceOverTimeBigChart({
   }).format(overallBalance);
 
   return (
-    <Card className={className}>
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+    <Card className={className} padding={"none"}>
+      <CardHeader className="flex flex-col items-stretch space-y-0 border-b px-4 sm:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-1 px-2 py-2 ">
           <CardTitle>Saldoentwicklung der letzten 6 Monate</CardTitle>
           <CardDescription>
             Die kumulierte Bilanz über die Monate
@@ -129,7 +129,7 @@ export function BalanceOverTimeBigChart({
             className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
             data-active
           >
-            <span className="text-xs text-muted-foreground">Balance</span>
+            <span className="text-xs text-muted-foreground">Saldo</span>
             <span
               className={`text-lg font-bold leading-none sm:text-3xl ${overallBalance >= 0 ? "text-chart-good" : "text-chart-bad"}`}
             >
@@ -139,10 +139,10 @@ export function BalanceOverTimeBigChart({
           </button>
         </div>
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
+      <CardContent className="px-4 pb-6 h-full">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[100px] w-full"
+          className="aspect-auto h-full w-full"
         >
           <LineChart
             accessibilityLayer
@@ -150,6 +150,8 @@ export function BalanceOverTimeBigChart({
             margin={{
               left: 12,
               right: 12,
+              top: 12,
+              bottom: 0,
             }}
           >
             <CartesianGrid vertical={false} />
