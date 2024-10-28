@@ -18,11 +18,13 @@ import { Contact } from "@/features/contacts/contactSchema";
 type ContactTableProps = {
   onRowClick?: (contactId: string) => void;
   compact?: boolean; // This will allow for a smaller version later
+  className?: string;
 };
 
 export default function ContactTable({
   onRowClick,
   compact = false,
+  className,
 }: ContactTableProps) {
   const [contacts, setContacts] = useState<[string, Omit<Contact, "id">][]>();
   const [loading, setLoading] = useState(true);
@@ -81,7 +83,7 @@ export default function ContactTable({
   if (loading) return <div></div>;
 
   return (
-    <div ref={containerRef} className="w-full">
+    <div ref={containerRef} className={className}>
       <Table className="table-fixed w-full min-w-0">
         <TableHeader>
           <TableRow>

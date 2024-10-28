@@ -188,12 +188,12 @@ export default function InvoiceTable({
               {visibleColumns.showType && (
                 <TableCell className="truncate">
                   {invoice.type === "outgoing" ? (
-                    <span className="flex items-center gap-3 text-green-500">
+                    <span className="flex items-center gap-3 text-chart-good">
                       <TrendingUp />
                       {visibleColumns.showFullType && " Verkauf"}
                     </span>
                   ) : (
-                    <span className="flex items-center gap-3 text-red-500">
+                    <span className="flex items-center gap-3 text-chart-bad">
                       <TrendingDown />
                       {visibleColumns.showFullType && " Einkauf"}
                     </span>
