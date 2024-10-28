@@ -16,7 +16,7 @@ function FormSectionAdder<TFieldValues extends FieldValues>({
     type: "array" | "single";
   }[];
   form: UseFormReturn<TFieldValues>;
-  schemaMap: Partial<Record<Path<TFieldValues>, z.ZodObject<any>>>; // Typing it as partial
+  schemaMap: Partial<Record<Path<TFieldValues>, z.ZodType>>; // Typing it as partial
 }) {
   const handleAddSection = (
     name: Path<TFieldValues>,

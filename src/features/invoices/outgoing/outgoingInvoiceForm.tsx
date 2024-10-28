@@ -21,6 +21,9 @@ import { useComposedRef } from "@/lib/utils/useComposedRef";
 import { createFormSubmit } from "@/features/forms/createFormSubmit";
 import FormSectionAdder from "@/features/forms/components/FormSectionAdder";
 import FormSectionArray from "@/features/forms/components/FormSectionArray";
+import FormSectionSingle from "@/features/forms/components/FormSectionSingle";
+import { FileUploadField } from "@/components/ui/fileDrop";
+import { Directories } from "@/lib/utils/tauri/diskUtils";
 
 export type OutgoingInvoiceFormRef = {
   submit: () => Promise<boolean>;
@@ -164,13 +167,25 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
           )}
         />
 
+        <FormSectionSingle
+          form={form}
+          name="uploadedDocuments"
+          label="Dokumente"
+        >
+          <FileUploadField
+            name="uploadedDocuments"
+            nestedPath={[Directories.INVOICES_DIR, form.getValues("id")]}
+          />
+        </FormSectionSingle>
         <FormSectionAdder
           form={form}
           sections={[
             { type: "array", name: "items", label: "Rechnungsposten" },
+            { type: "single", name: "uploadedDocuments", label: "Dokumente" },
           ]}
           schemaMap={{
-            items: orderItemSchema,
+            items: outgoingInvoiceSchema,
+            uploadedDocuments: z.array(z.string()),
           }}
         />
 

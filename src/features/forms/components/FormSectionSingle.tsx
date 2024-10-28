@@ -11,10 +11,12 @@ interface FormSectionProps<TFieldValues extends Record<string, any>> {
 export default function FormSectionSingle<
   TFieldValues extends Record<string, any>,
 >({ form, name, label, children }: FormSectionProps<TFieldValues>) {
+  console.log(name, form.getValues(name));
   return (
     <>
       {form.getValues(name) && (
         <div className="flex flex-col gap-2">
+          <h1>test</h1>
           {/* Render the section header */}
           <FormSectionHeader name={name} label={label} form={form} />
 
