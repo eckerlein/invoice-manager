@@ -42,6 +42,7 @@ export default function InvoiceTable({
     showBelegnummer: false,
     showDokumentanzahl: false,
     showType: true,
+    showFullType: false,
   });
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -116,7 +117,8 @@ export default function InvoiceTable({
         const width = containerRef.current.offsetWidth;
         setVisibleColumns({
           showContact: width >= 400,
-          showBelegnummer: width >= 500,
+          showBelegnummer: width >= 600,
+          showFullType: width >= 600,
           showDokumentanzahl: width >= 600,
           showType: true,
         });
@@ -137,10 +139,14 @@ export default function InvoiceTable({
       <Table className="table-fixed w-full min-w-0">
         <TableHeader>
           <TableRow>
-            <TableHead className="truncate">Name</TableHead>
             {visibleColumns.showType && (
-              <TableHead className="truncate">Typ</TableHead>
+              <TableHead
+                className={`truncate ${!visibleColumns.showFullType ? "w-16" : "w-32"}`}
+              >
+                Typ
+              </TableHead>
             )}
+            <TableHead className="truncate">Name</TableHead>
             {visibleColumns.showContact && (
               <TableHead className="truncate">Kontakt</TableHead>
             )}
@@ -179,20 +185,22 @@ export default function InvoiceTable({
               tabIndex={0}
               aria-label={`View details for invoice ${invoice.name}`}
             >
-              <TableCell className="truncate">{invoice.name}</TableCell>
               {visibleColumns.showType && (
                 <TableCell className="truncate">
                   {invoice.type === "outgoing" ? (
-                    <span className="flex items-center text-green-500">
-                      <TrendingUp className="mr-1" /> Verkaufsrechnung
+                    <span className="flex items-center gap-3 text-green-500">
+                      <TrendingUp />
+                      {visibleColumns.showFullType && " Verkauf"}
                     </span>
                   ) : (
-                    <span className="flex items-center text-red-500">
-                      <TrendingDown className="mr-1" /> Einkaufsrechnung
+                    <span className="flex items-center gap-3 text-red-500">
+                      <TrendingDown />
+                      {visibleColumns.showFullType && " Einkauf"}
                     </span>
                   )}
                 </TableCell>
               )}
+              <TableCell className="truncate">{invoice.name}</TableCell>
               {visibleColumns.showContact && (
                 <TableCell className="truncate">
                   {invoice.contact
