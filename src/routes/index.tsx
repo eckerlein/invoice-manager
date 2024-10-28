@@ -7,6 +7,9 @@ import { IncomeExpenseTrendChart } from "@/features/charts/IncomeExpenseTrendCha
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BalanceOverTimeChart } from "@/features/charts/BalanceOverTimeCHart";
 import { BalanceOverTimeBigChart } from "@/features/charts/BalanceOverTimeBigChart";
+import ContactTable from "@/features/contacts/contactTable";
+import { CreateInvoiceMenuBar } from "@/features/invoices/createInvoiceMenuBar";
+import { buttonVariants } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   component: () => {
@@ -45,13 +48,45 @@ export const Route = createFileRoute("/")({
               </Tabs>
             </div>
 
-            <DashboardCard
-              title="Rechnungen"
-              link="/invoices/create"
-              className="row-span-3"
-            >
-              <InvoiceTable />
-            </DashboardCard>
+            <div className="row-span-3">
+              <Tabs
+                defaultValue="invoices"
+                key={"invoices" + tabKey} // Re-render Tabs on resize
+                className="w-full h-full grid grid-rows-[auto_1fr] gap-2"
+              >
+                <TabsList className="w-full grid grid-cols-2">
+                  <TabsTrigger value="invoices">Rechnungen</TabsTrigger>
+                  <TabsTrigger value="contacts">Kontakte</TabsTrigger>
+                </TabsList>
+                <TabsContent
+                  value="invoices"
+                  className="h-full overflow-y-auto"
+                >
+                  <div className="border rounded-lg h-full overflow-hidden">
+                    <PageHeader
+                      title={"Belege"}
+                      actionBar={
+                        <CreateInvoiceMenuBar
+                          triggerClassName={buttonVariants({ size: "xs" })}
+                        />
+                      }
+                      variants={{ size: "md" }}
+                    />
+                    <InvoiceTable />
+                  </div>
+                </TabsContent>
+                <TabsContent value="contacts">
+                  <DashboardCard
+                    title="Kontakte"
+                    link="/invoices/create"
+                    className="row-span-3 h-full"
+                  >
+                    <ContactTable />
+                  </DashboardCard>
+                </TabsContent>
+              </Tabs>
+            </div>
+
             <BalanceOverTimeBigChart className="col-span-2 row-span-2" />
           </div>
         </div>
