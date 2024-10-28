@@ -97,7 +97,7 @@ export function BalanceOverTimeChart() {
         return {
           month,
           displayMonth,
-          balanceOverTime: monthlyBalance?.balanceOverTime ?? cumulativeBalance,
+          balanceOverTime: monthlyBalance?.balanceOverTime ?? 0,
         };
       }).reverse();
 
