@@ -15,7 +15,7 @@ const variants = {
 };
 
 const pageHeaderVariants = cva(
-  "px-4 flex justify-between items-center bg-background/50 backdrop-blur-sm border-b", // Base styles
+  "px-4 flex justify-between items-center bg-baclground/50 backdrop-blur-sm border-b z-10", // Base styles
   {
     variants,
     defaultVariants: {

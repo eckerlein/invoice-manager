@@ -10,6 +10,8 @@ import { BalanceOverTimeBigChart } from "@/features/charts/BalanceOverTimeBigCha
 import ContactTable from "@/features/contacts/contactTable";
 import { CreateInvoiceMenuBar } from "@/features/invoices/createInvoiceMenuBar";
 import { buttonVariants } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
+import { Plus } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: () => {
@@ -50,7 +52,7 @@ export const Route = createFileRoute("/")({
 
             <div className="row-span-3">
               <Tabs
-                defaultValue="invoices"
+                defaultValue="contacts"
                 key={"invoices" + tabKey} // Re-render Tabs on resize
                 className="w-full h-full grid grid-rows-[auto_1fr] gap-2"
               >
@@ -75,14 +77,26 @@ export const Route = createFileRoute("/")({
                     <InvoiceTable />
                   </div>
                 </TabsContent>
-                <TabsContent value="contacts">
-                  <DashboardCard
-                    title="Kontakte"
-                    link="/invoices/create"
-                    className="row-span-3 h-full"
-                  >
+
+                <TabsContent
+                  value="contacts"
+                  className="h-full overflow-y-auto"
+                >
+                  <div className="border rounded-lg h-full overflow-y-auto">
+                    <PageHeader
+                      title={"Belege"}
+                      actionBar={
+                        <Link
+                          className={buttonVariants({ size: "xs" })}
+                          to="/contacts/create"
+                        >
+                          <Plus />
+                        </Link>
+                      }
+                      variants={{ size: "md" }}
+                    />
                     <ContactTable />
-                  </DashboardCard>
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>
