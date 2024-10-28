@@ -13,9 +13,11 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
-export const Route = createFileRoute("/invoices/$invoiceId")({
+export const Route = createFileRoute("/invoices/$incomingInvoiceId")({
   component: () => {
-    const { invoiceId } = useParams({ from: "/invoices/$invoiceId" });
+    const { incomingInvoiceId } = useParams({
+      from: "/invoices/$incomingInvoiceId",
+    });
     const [data, setData] = useState<IncomingInvoice>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -27,7 +29,7 @@ export const Route = createFileRoute("/invoices/$invoiceId")({
       async function fetchInvoiceData() {
         try {
           const invoiceStore = await IncomingInvoiceStore.getInstance();
-          const invoiceData = await invoiceStore.get(invoiceId);
+          const invoiceData = await invoiceStore.get(incomingInvoiceId);
           setData(invoiceData);
           setLoading(false);
         } catch (err) {
@@ -38,7 +40,7 @@ export const Route = createFileRoute("/invoices/$invoiceId")({
       }
 
       fetchInvoiceData();
-    }, [invoiceId]);
+    }, [incomingInvoiceId]);
 
     if (loading) {
       return <div></div>;
@@ -67,7 +69,7 @@ export const Route = createFileRoute("/invoices/$invoiceId")({
                 variant="destuctiveOutline"
                 onClick={async () => {
                   const invoiceStore = await IncomingInvoiceStore.getInstance();
-                  await invoiceStore.delete(invoiceId);
+                  await invoiceStore.delete(incomingInvoiceId);
                   navigate({ to: "/invoices" });
                 }}
               >
@@ -90,7 +92,6 @@ export const Route = createFileRoute("/invoices/$invoiceId")({
           defaultValues={data}
           ref={formRef}
           showButton={false}
-          invoiceId={invoiceId}
         />
       </main>
     );

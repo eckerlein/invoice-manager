@@ -16,7 +16,7 @@ import { Route as InvoicesIndexImport } from './routes/invoices/index'
 import { Route as ContactsIndexImport } from './routes/contacts/index'
 import { Route as InvoicesCreateOutgoingImport } from './routes/invoices/createOutgoing'
 import { Route as InvoicesCreateIncomingImport } from './routes/invoices/createIncoming'
-import { Route as InvoicesInvoiceIdImport } from './routes/invoices/$invoiceId'
+import { Route as InvoicesIncomingInvoiceIdImport } from './routes/invoices/$incomingInvoiceId'
 import { Route as ContactsCreateImport } from './routes/contacts/create'
 import { Route as ContactsContactIdImport } from './routes/contacts/$contactId'
 
@@ -52,9 +52,9 @@ const InvoicesCreateIncomingRoute = InvoicesCreateIncomingImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const InvoicesInvoiceIdRoute = InvoicesInvoiceIdImport.update({
-  id: '/invoices/$invoiceId',
-  path: '/invoices/$invoiceId',
+const InvoicesIncomingInvoiceIdRoute = InvoicesIncomingInvoiceIdImport.update({
+  id: '/invoices/$incomingInvoiceId',
+  path: '/invoices/$incomingInvoiceId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,11 +95,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactsCreateImport
       parentRoute: typeof rootRoute
     }
-    '/invoices/$invoiceId': {
-      id: '/invoices/$invoiceId'
-      path: '/invoices/$invoiceId'
-      fullPath: '/invoices/$invoiceId'
-      preLoaderRoute: typeof InvoicesInvoiceIdImport
+    '/invoices/$incomingInvoiceId': {
+      id: '/invoices/$incomingInvoiceId'
+      path: '/invoices/$incomingInvoiceId'
+      fullPath: '/invoices/$incomingInvoiceId'
+      preLoaderRoute: typeof InvoicesIncomingInvoiceIdImport
       parentRoute: typeof rootRoute
     }
     '/invoices/createIncoming': {
@@ -139,7 +139,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
-  '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
+  '/invoices/$incomingInvoiceId': typeof InvoicesIncomingInvoiceIdRoute
   '/invoices/createIncoming': typeof InvoicesCreateIncomingRoute
   '/invoices/createOutgoing': typeof InvoicesCreateOutgoingRoute
   '/contacts': typeof ContactsIndexRoute
@@ -150,7 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
-  '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
+  '/invoices/$incomingInvoiceId': typeof InvoicesIncomingInvoiceIdRoute
   '/invoices/createIncoming': typeof InvoicesCreateIncomingRoute
   '/invoices/createOutgoing': typeof InvoicesCreateOutgoingRoute
   '/contacts': typeof ContactsIndexRoute
@@ -162,7 +162,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/contacts/$contactId': typeof ContactsContactIdRoute
   '/contacts/create': typeof ContactsCreateRoute
-  '/invoices/$invoiceId': typeof InvoicesInvoiceIdRoute
+  '/invoices/$incomingInvoiceId': typeof InvoicesIncomingInvoiceIdRoute
   '/invoices/createIncoming': typeof InvoicesCreateIncomingRoute
   '/invoices/createOutgoing': typeof InvoicesCreateOutgoingRoute
   '/contacts/': typeof ContactsIndexRoute
@@ -175,7 +175,7 @@ export interface FileRouteTypes {
     | '/'
     | '/contacts/$contactId'
     | '/contacts/create'
-    | '/invoices/$invoiceId'
+    | '/invoices/$incomingInvoiceId'
     | '/invoices/createIncoming'
     | '/invoices/createOutgoing'
     | '/contacts'
@@ -185,7 +185,7 @@ export interface FileRouteTypes {
     | '/'
     | '/contacts/$contactId'
     | '/contacts/create'
-    | '/invoices/$invoiceId'
+    | '/invoices/$incomingInvoiceId'
     | '/invoices/createIncoming'
     | '/invoices/createOutgoing'
     | '/contacts'
@@ -195,7 +195,7 @@ export interface FileRouteTypes {
     | '/'
     | '/contacts/$contactId'
     | '/contacts/create'
-    | '/invoices/$invoiceId'
+    | '/invoices/$incomingInvoiceId'
     | '/invoices/createIncoming'
     | '/invoices/createOutgoing'
     | '/contacts/'
@@ -207,7 +207,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContactsContactIdRoute: typeof ContactsContactIdRoute
   ContactsCreateRoute: typeof ContactsCreateRoute
-  InvoicesInvoiceIdRoute: typeof InvoicesInvoiceIdRoute
+  InvoicesIncomingInvoiceIdRoute: typeof InvoicesIncomingInvoiceIdRoute
   InvoicesCreateIncomingRoute: typeof InvoicesCreateIncomingRoute
   InvoicesCreateOutgoingRoute: typeof InvoicesCreateOutgoingRoute
   ContactsIndexRoute: typeof ContactsIndexRoute
@@ -218,7 +218,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactsContactIdRoute: ContactsContactIdRoute,
   ContactsCreateRoute: ContactsCreateRoute,
-  InvoicesInvoiceIdRoute: InvoicesInvoiceIdRoute,
+  InvoicesIncomingInvoiceIdRoute: InvoicesIncomingInvoiceIdRoute,
   InvoicesCreateIncomingRoute: InvoicesCreateIncomingRoute,
   InvoicesCreateOutgoingRoute: InvoicesCreateOutgoingRoute,
   ContactsIndexRoute: ContactsIndexRoute,
@@ -240,7 +240,7 @@ export const routeTree = rootRoute
         "/",
         "/contacts/$contactId",
         "/contacts/create",
-        "/invoices/$invoiceId",
+        "/invoices/$incomingInvoiceId",
         "/invoices/createIncoming",
         "/invoices/createOutgoing",
         "/contacts/",
@@ -256,8 +256,8 @@ export const routeTree = rootRoute
     "/contacts/create": {
       "filePath": "contacts/create.tsx"
     },
-    "/invoices/$invoiceId": {
-      "filePath": "invoices/$invoiceId.tsx"
+    "/invoices/$incomingInvoiceId": {
+      "filePath": "invoices/$incomingInvoiceId.tsx"
     },
     "/invoices/createIncoming": {
       "filePath": "invoices/createIncoming.tsx"

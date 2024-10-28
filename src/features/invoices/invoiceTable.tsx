@@ -162,8 +162,8 @@ export default function InvoiceTable({
                   onRowClick(invoice.id);
                 } else {
                   navigate({
-                    to: `/invoices/$invoiceId`,
-                    params: { invoiceId: invoice.id },
+                    to: `/invoices/$incomingInvoiceId`,
+                    params: { incomingInvoiceId: invoice.id },
                   });
                 }
               }}
