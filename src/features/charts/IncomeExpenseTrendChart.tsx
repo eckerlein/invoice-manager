@@ -44,7 +44,15 @@ type ChartData = {
   total: number;
 };
 
-export function IncomeExpenseTrendChart() {
+type IncomeExpenseTrendChartProps = {
+  className?: string;
+  chartHeight?: number;
+};
+
+export function IncomeExpenseTrendChart({
+  className,
+  chartHeight = 200,
+}: IncomeExpenseTrendChartProps) {
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [overallTotal, setOverallTotal] = useState(0);
 
@@ -116,21 +124,25 @@ export function IncomeExpenseTrendChart() {
   }).format(overallTotal);
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>Trends der Einnahmen und Ausgaben</CardTitle>
         <CardDescription>Einblicke in Einnahmen und Ausgaben</CardDescription>
       </CardHeader>
       <CardContent>
         <div
-          className={`text-6xl ${
+          className={`text-5xl ${
             overallTotal >= 0 ? "text-chart-good" : "text-chart-bad"
           }`}
         >
           {overallTotal >= 0 ? "+" : ""}
           {formattedOverallTotal}
         </div>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto w-full"
+          style={{ height: chartHeight }}
+        >
           <LineChart
             accessibilityLayer
             data={chartData}
@@ -216,7 +228,7 @@ export function IncomeExpenseTrendChart() {
       <CardFooter>
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
-            <div className="flex items-center gap-0 font-medium leading-none">
+            <div className="flex items-center gap-0 leading-sm text-muted-foreground">
               Der Umsatz ist in den letzten 6 Monaten{" "}
               {overallTotal >= 0 ? (
                 <span className="ml-1 flex items-center gap-1 text-chart-good">
@@ -229,10 +241,6 @@ export function IncomeExpenseTrendChart() {
                   <TrendingDown className="h-4 w-4" />
                 </span>
               )}
-            </div>
-            <div className="flex items-center gap-2 leading-sm text-muted-foreground">
-              Hier sehen Sie, wie sich Ihre Einnahmen und Ausgaben in den
-              letzten 6 Monaten entwickelt haben.
             </div>
           </div>
         </div>
