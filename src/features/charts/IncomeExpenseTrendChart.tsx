@@ -44,7 +44,7 @@ type ChartData = {
   total: number;
 };
 
-export function FinancialChart() {
+export function IncomeExpenseTrendChart() {
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [overallTotal, setOverallTotal] = useState(0);
 
@@ -83,10 +83,10 @@ export function FinancialChart() {
             if (isEinnahmen) {
               lastSixMonths[monthIndex].einnahmen += amount;
             } else {
-              lastSixMonths[monthIndex].ausgaben += amount;
+              lastSixMonths[monthIndex].ausgaben -= amount;
             }
             lastSixMonths[monthIndex].total =
-              lastSixMonths[monthIndex].einnahmen -
+              lastSixMonths[monthIndex].einnahmen +
               lastSixMonths[monthIndex].ausgaben;
           }
         });
@@ -118,7 +118,7 @@ export function FinancialChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Finanzübersicht der letzten 6 Monate</CardTitle>
+        <CardTitle>Trends der Einnahmen und Ausgaben</CardTitle>
         <CardDescription>Einblicke in Einnahmen und Ausgaben</CardDescription>
       </CardHeader>
       <CardContent>
@@ -127,7 +127,7 @@ export function FinancialChart() {
             overallTotal >= 0 ? "text-chart-good" : "text-chart-bad"
           }`}
         >
-          {overallTotal >= 0 ? "+" : "-"}
+          {overallTotal >= 0 ? "+" : ""}
           {formattedOverallTotal}
         </div>
         <ChartContainer config={chartConfig}>
@@ -135,8 +135,10 @@ export function FinancialChart() {
             accessibilityLayer
             data={chartData}
             margin={{
-              left: 12,
-              right: 12,
+              left: 15,
+              right: 15,
+              top: 15,
+              bottom: 0,
             }}
           >
             <CartesianGrid vertical={false} />

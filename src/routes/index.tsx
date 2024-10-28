@@ -3,7 +3,7 @@ import PageHeader from "@/components/sections/PageHeader";
 import InvoiceTable from "@/features/invoices/invoiceTable";
 import ContactTable from "@/features/contacts/contactTable";
 import { DashboardCard } from "@/features/dashboard/DashboardCard";
-import { FinancialChart } from "@/features/dashboard/FinancialChart";
+import { IncomeExpenseTrendChart } from "@/features/charts/IncomeExpenseTrendChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/")({
@@ -13,13 +13,13 @@ export const Route = createFileRoute("/")({
         <PageHeader title="Dashboard" size="lg" />
 
         <div className="grid grid-cols-2 gap-4 p-4">
-          <Tabs defaultValue="last-6-months" className="w-full">
-            <TabsList className="w-full">
-              <TabsTrigger value="last-6-months">Letzte 6 Monate</TabsTrigger>
+          <Tabs defaultValue="financial-trends" className="w-full">
+            <TabsList className="w-full grid grid-cols-1">
+              <TabsTrigger value="financial-trends">Trends</TabsTrigger>
               {/* <TabsTrigger value="last-year">Letztes Jahr</TabsTrigger> */}
             </TabsList>
-            <TabsContent value="last-6-months">
-              <FinancialChart />
+            <TabsContent value="financial-trends">
+              <IncomeExpenseTrendChart />
             </TabsContent>
           </Tabs>
           {/* <DashboardCard title="Rechnungen" link="/invoices/create">
