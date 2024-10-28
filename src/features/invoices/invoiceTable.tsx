@@ -161,10 +161,17 @@ export default function InvoiceTable({
                 if (onRowClick) {
                   onRowClick(invoice.id);
                 } else {
-                  navigate({
-                    to: `/invoices/$incomingInvoiceId`,
-                    params: { incomingInvoiceId: invoice.id },
-                  });
+                  if (invoice.type === "outgoing") {
+                    navigate({
+                      to: `/invoices/$outgoingId/edit`,
+                      params: { outgoingId: invoice.id },
+                    });
+                  } else if (invoice.type === "incoming") {
+                    navigate({
+                      to: `/invoices/$incomingInvoiceId`,
+                      params: { incomingInvoiceId: invoice.id },
+                    });
+                  }
                 }
               }}
               className="cursor-pointer hover:bg-secondary transition-colors duration-100 ease-in-out"
