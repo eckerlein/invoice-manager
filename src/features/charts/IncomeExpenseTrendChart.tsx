@@ -46,12 +46,10 @@ type ChartData = {
 
 type IncomeExpenseTrendChartProps = {
   className?: string;
-  chartHeight?: number;
 };
 
 export function IncomeExpenseTrendChart({
   className,
-  chartHeight = 200,
 }: IncomeExpenseTrendChartProps) {
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [overallTotal, setOverallTotal] = useState(0);
@@ -128,8 +126,6 @@ export function IncomeExpenseTrendChart({
       <CardHeader>
         <CardTitle>Trends der Einnahmen und Ausgaben</CardTitle>
         <CardDescription>Einblicke in Einnahmen und Ausgaben</CardDescription>
-      </CardHeader>
-      <CardContent>
         <div
           className={`text-5xl ${
             overallTotal >= 0 ? "text-chart-good" : "text-chart-bad"
@@ -138,10 +134,11 @@ export function IncomeExpenseTrendChart({
           {overallTotal >= 0 ? "+" : ""}
           {formattedOverallTotal}
         </div>
+      </CardHeader>
+      <CardContent className="h-full">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto w-full"
-          style={{ height: chartHeight }}
+          className="aspect-auto w-full h-full"
         >
           <LineChart
             accessibilityLayer

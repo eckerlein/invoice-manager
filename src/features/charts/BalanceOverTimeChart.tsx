@@ -34,7 +34,11 @@ type ChartData = {
   balanceOverTime: number;
 };
 
-export function BalanceOverTimeChart() {
+type BalanceOverTimeChartProps = {
+  className?: string;
+};
+
+export function BalanceOverTimeChart({ className }: BalanceOverTimeChartProps) {
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [overallBalance, setOverallBalance] = useState(0);
 
@@ -114,30 +118,32 @@ export function BalanceOverTimeChart() {
   }).format(overallBalance);
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className={className}>
+      <CardHeader className="p-0">
         <CardTitle>Saldoentwicklung der letzten 6 Monate</CardTitle>
         <CardDescription>Die kumulierte Bilanz über die Monate</CardDescription>
-      </CardHeader>
-      <CardContent>
         <div
-          className={`text-6xl ${
+          className={`text-5xl ${
             overallBalance >= 0 ? "text-chart-good" : "text-chart-bad"
           }`}
         >
           {overallBalance >= 0 ? "+" : ""}
           {formattedOverallBalance}
         </div>
+      </CardHeader>
+      <CardContent className="h-full">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[100px] w-full"
+          className="aspect-auto w-full h-full"
         >
           <LineChart
             accessibilityLayer
             data={chartData}
             margin={{
-              left: 12,
-              right: 12,
+              left: 15,
+              right: 15,
+              top: 15,
+              bottom: 0,
             }}
           >
             <CartesianGrid vertical={false} />
@@ -169,16 +175,9 @@ export function BalanceOverTimeChart() {
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Gesamtsaldo nach 6 Monaten
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Die kumulierte Bilanz von Einnahmen und Ausgaben
-            </div>
-          </div>
+      <CardFooter className="p-0">
+        <div className="flex items-center gap-0 leading-sm text-muted-foreground text-sm">
+          Die kumulierte Bilanz von Einnahmen und Ausgaben
         </div>
       </CardFooter>
     </Card>

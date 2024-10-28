@@ -24,13 +24,10 @@ export const Route = createFileRoute("/")({
               <TabsTrigger value="balance">Balance</TabsTrigger>
             </TabsList>
             <TabsContent value="financial-trends" className="h-full">
-              <IncomeExpenseTrendChart
-                chartHeight={130}
-                className="h-full pb-0"
-              />
+              <IncomeExpenseTrendChart className="h-full" />
             </TabsContent>
             <TabsContent value="balance">
-              <BalanceOverTimeChart />
+              <BalanceOverTimeChart className="h-full" />
             </TabsContent>
           </Tabs>
           {/* <DashboardCard title="Rechnungen" link="/invoices/create">
