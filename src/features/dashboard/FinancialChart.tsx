@@ -1,4 +1,4 @@
-import { TrendingUp } from "lucide-react";
+import { GitCommitVertical, TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import { useEffect, useState } from "react";
 import { format, subMonths } from "date-fns";
@@ -153,21 +153,60 @@ export function FinancialChart() {
               type="monotone"
               stroke="var(--color-einnahmen)"
               strokeWidth={2}
-              dot={false}
+              dot={({ cx, cy, payload }) => {
+                const r = 24;
+                return (
+                  <GitCommitVertical
+                    key={payload.month}
+                    x={cx - r / 2}
+                    y={cy - r / 2}
+                    width={r}
+                    height={r}
+                    fill="hsl(var(--background))"
+                    stroke="var(--color-einnahmen)"
+                  />
+                );
+              }}
             />
             <Line
               dataKey="ausgaben"
               type="monotone"
               stroke="var(--color-ausgaben)"
               strokeWidth={2}
-              dot={false}
+              dot={({ cx, cy, payload }) => {
+                const r = 24;
+                return (
+                  <GitCommitVertical
+                    key={payload.month}
+                    x={cx - r / 2}
+                    y={cy - r / 2}
+                    width={r}
+                    height={r}
+                    fill="hsl(var(--background))"
+                    stroke="var(--color-ausgaben)"
+                  />
+                );
+              }}
             />
             <Line
               dataKey="total"
               type="monotone"
               stroke="var(--color-total)"
               strokeWidth={2}
-              dot={false}
+              dot={({ cx, cy, payload }) => {
+                const r = 24;
+                return (
+                  <GitCommitVertical
+                    key={payload.month}
+                    x={cx - r / 2}
+                    y={cy - r / 2}
+                    width={r}
+                    height={r}
+                    fill="hsl(var(--background))"
+                    stroke="var(--color-total)"
+                  />
+                );
+              }}
             />
           </LineChart>
         </ChartContainer>
