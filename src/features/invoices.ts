@@ -7,7 +7,7 @@ export type BaseInvoice = {
 };
 
 export type SelfCreatedInvoice = BaseInvoice & {
-  lineItems: Array<{ description: string; quantity: number; price: number }>;
+  items: Array<{ description: string; quantity: number; price: number }>;
   createdDate: Date;
   editDate?: Date;
   deleteDate?: Date;

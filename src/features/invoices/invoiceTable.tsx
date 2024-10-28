@@ -73,7 +73,7 @@ export default function InvoiceTable({
             name: invoice.name,
             contact: invoice.contact,
             documentDate: invoice.documentDate,
-            amount: invoice.lineItems.reduce(
+            amount: invoice.items.reduce(
               (sum, item) => sum + item.price * item.quantity,
               0
             ),

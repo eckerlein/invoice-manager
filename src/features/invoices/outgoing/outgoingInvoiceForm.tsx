@@ -46,7 +46,7 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
     id: uid(),
     documentDate: new Date(),
     createdDate: new Date(),
-    lineItems: [],
+    items: [],
   };
 
   const form = useForm<z.infer<typeof outgoingInvoiceSchema>>({
@@ -111,23 +111,23 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
         />
 
         <FormSectionArray
-          name="lineItems"
+          name="items"
           label="Rechnungsposten"
           form={form}
           render={(index) => (
             <div className="grid grid-cols-4 gap-4 w-full">
               <TextField
-                name={`lineItems.${index}.description`}
+                name={`items.${index}.description`}
                 label="Beschreibung"
               />
-              <TextField name={`lineItems.${index}.unit`} label="Einheit" />
+              <TextField name={`items.${index}.unit`} label="Einheit" />
               <TextField
-                name={`lineItems.${index}.quantity`}
+                name={`items.${index}.quantity`}
                 label="Menge"
                 type="number"
               />
               <TextField
-                name={`lineItems.${index}.price`}
+                name={`items.${index}.price`}
                 label="Preis"
                 type="currency"
               />
@@ -138,10 +138,10 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
         <FormSectionAdder
           form={form}
           sections={[
-            { type: "array", name: "lineItems", label: "Rechnungsposten" },
+            { type: "array", name: "items", label: "Rechnungsposten" },
           ]}
           schemaMap={{
-            lineItems: orderItemSchema,
+            items: orderItemSchema,
           }}
         />
 
