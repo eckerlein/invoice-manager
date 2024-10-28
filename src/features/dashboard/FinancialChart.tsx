@@ -46,7 +46,7 @@ type ChartData = {
 
 export function FinancialChart() {
   const [chartData, setChartData] = useState<ChartData[]>([]);
-  console.log(chartData);
+  const [overallTotal, setOverallTotal] = useState(0);
 
   useEffect(() => {
     async function fetchInvoiceData() {
@@ -68,21 +68,17 @@ export function FinancialChart() {
         };
       }).reverse();
 
-      console.log("lastSixMonths", lastSixMonths);
-
       // Helper function to add invoice totals by month
       const addTotals = (
         entries: [string, { documentDate: Date; amount: number }][] | undefined,
         isEinnahmen: boolean
       ) => {
         entries?.forEach(([_, { documentDate, amount }]) => {
-          console.log(documentDate, amount);
           const monthIndex = lastSixMonths.findIndex(
             (data) =>
               format(documentDate, "MMMM yyyy") ===
               format(new Date(data.month), "MMMM yyyy")
           );
-          console.log(monthIndex);
           if (monthIndex > -1) {
             if (isEinnahmen) {
               lastSixMonths[monthIndex].einnahmen += amount;
@@ -101,10 +97,23 @@ export function FinancialChart() {
       addTotals(outgoingEntries, true); // Einnahmen
 
       setChartData(lastSixMonths);
+
+      // Calculate the overall total of all totals
+      const calculatedOverallTotal = lastSixMonths.reduce(
+        (acc, month) => acc + month.total,
+        0
+      );
+      setOverallTotal(calculatedOverallTotal);
     }
 
     fetchInvoiceData();
   }, []);
+
+  // Format the overall total as German currency and add a +/- sign
+  const formattedOverallTotal = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+  }).format(overallTotal);
 
   return (
     <Card>
@@ -113,6 +122,14 @@ export function FinancialChart() {
         <CardDescription>Einblicke in Einnahmen und Ausgaben</CardDescription>
       </CardHeader>
       <CardContent>
+        <div
+          className={`text-6xl ${
+            overallTotal >= 0 ? "text-chart-2" : "text-chart-1"
+          }`}
+        >
+          {overallTotal >= 0 ? "+" : "-"}
+          {formattedOverallTotal}
+        </div>
         <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
