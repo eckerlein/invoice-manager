@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DefaultValues, useForm } from "react-hook-form";
+import { DefaultValues, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import { uid } from "uid";
@@ -54,6 +54,17 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
     defaultValues,
   });
 
+  // Watch for changes in items to recalculate the total amount
+  const items = useWatch({ control: form.control, name: "items" });
+  const itemsTotalPrices = items.map(
+    (item) => (item.price || 0) * (item.quantity || 1)
+  );
+  const totalAmount = itemsTotalPrices.reduce((sum, item) => sum + item, 0);
+
+  useEffect(() => {
+    form.setValue("amount", totalAmount);
+  }, [totalAmount, form]);
+
   async function onSubmit(data: z.infer<typeof outgoingInvoiceSchema>) {
     try {
       const invoiceStore = await OutgoingInvoiceStore.getInstance();
@@ -98,11 +109,12 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
       >
         <TextField name="id" label="Belegnummer" disabled={true} />
         <TextField name="name" label="Titel" />
+
         <div className="grid grid-cols-2 gap-4">
           <FormDatePicker label="Rechnungsdatum" name="documentDate" />
           <FormDatePicker label="Erstellungsdatum" name="createdDate" />
         </div>
-        <TextField name="amount" label="Betrag" type="currency" />
+
         <FormComboBox
           name="contact"
           label="Kontakt"
@@ -110,26 +122,43 @@ export const OutgoingInvoiceForm = forwardRef(function OutgoingInvoiceForm(
           placeholder="Select contact..."
         />
 
+        <TextField
+          name="amount"
+          label="Betrag"
+          type="currency"
+          disabled={true}
+        />
+
         <FormSectionArray
           name="items"
           label="Rechnungsposten"
           form={form}
           render={(index) => (
-            <div className="grid grid-cols-4 gap-4 w-full">
+            <div className="grid grid-cols-10 gap-4 w-full">
               <TextField
                 name={`items.${index}.description`}
                 label="Beschreibung"
+                className="col-span-4"
               />
-              <TextField name={`items.${index}.unit`} label="Einheit" />
               <TextField
                 name={`items.${index}.quantity`}
                 label="Menge"
                 type="number"
               />
+              <TextField name={`items.${index}.unit`} label="Einheit" />
               <TextField
                 name={`items.${index}.price`}
                 label="Preis"
+                className="col-span-2"
                 type="currency"
+              />
+              <TextField
+                name={`items.${index}.total`}
+                label="Gesamt"
+                type="currency"
+                className="col-span-2"
+                disabled={true}
+                value={itemsTotalPrices[index]}
               />
             </div>
           )}

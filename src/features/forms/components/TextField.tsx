@@ -17,6 +17,7 @@ const TextField = ({
   className,
   type,
   disabled,
+  value,
 }: {
   name: string;
   label: string;
@@ -24,12 +25,14 @@ const TextField = ({
   className?: string;
   disabled?: boolean;
   type?: TextFieldType;
+  value?: any;
 }) => {
+  console.log(name, "has value", value);
   return (
     <FormField
       name={name}
       render={({
-        field: { onChange: updateValue, onBlur, value, ...rest },
+        field: { onChange: updateValue, onBlur, value: fieldValue, ...rest },
       }) => {
         const [isFocused, setIsFocused] = useState(false);
 
@@ -69,7 +72,7 @@ const TextField = ({
           currency: "EUR",
         });
 
-        function getRenderedValue() {
+        function getRenderedValue(value: any) {
           if (isFocused) {
             if (type === "currency") {
               if (value === undefined) return "";
@@ -79,14 +82,14 @@ const TextField = ({
             if (type === "currency") {
               if (value === undefined) return "";
 
-              console.log("value", value, typeof value);
+              console.log("fieldValue", value, typeof value);
               return Euro.format(value);
             }
           }
           return value;
         }
 
-        function updateValueAfterBlur() {
+        function updateValueAfterBlur(value?: any) {
           if (type === "currency" && typeof value === "string") {
             updateValue(Number(value.replace(",", ".")));
           }
@@ -100,10 +103,10 @@ const TextField = ({
                 placeholder={placeholder ?? label}
                 disabled={disabled}
                 onChange={(e) => updateValue(parseValue(e.target.value, type))}
-                value={getRenderedValue()}
+                value={getRenderedValue(value ?? fieldValue)}
                 onBlur={() => {
                   setIsFocused(false);
-                  updateValueAfterBlur();
+                  updateValueAfterBlur(value ?? fieldValue);
                   onBlur();
                 }}
                 onFocus={() => setIsFocused(true)}
